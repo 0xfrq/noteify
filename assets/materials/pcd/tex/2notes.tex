@@ -15,6 +15,11 @@
 \usepackage{mdframed}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
+
+% Font: Times New Roman
+\usepackage{newtxtext,newtxmath}
+% Font: Courier untuk Source Code
+\usepackage{courier}
  
 \geometry{margin=2.5cm}
  
@@ -41,7 +46,7 @@
   frame=single,
   rulecolor=\color{codeframe},
   framerule=0.8pt,
-  basicstyle=\ttfamily\small,
+  basicstyle=\ttfamily\small, % Menggunakan Courier dari package courier
   keywordstyle=\bfseries\color{keywordcolor},
   commentstyle=\itshape\color{commentcolor},
   stringstyle=\color{stringcolor},
@@ -80,15 +85,15 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textit{Pengolahan Citra Digital -- Bab 2}}
-\fancyhead[R]{\small\textit{Dasar-Dasar Pembentukan Citra}}
+\fancyhead[R]{\small\textit{noteify -- Dasar-Dasar Pembentukan Citra}}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
  
 % ─── Judul ─────────────────────────────────────────────────────────────────────
 \title{
   {\LARGE\bfseries Pengolahan Citra Digital}\\[0.5em]
-  {\large Bab 2: Dasar-Dasar Pembentukan Citra}\\[0.3em]
-  {\normalsize Catatan Kuliah dengan Penjelasan \& Contoh Kode Python}
+  {\large Bab 2: Dasar-Dasar Pembentukan Citra}\\[0.8em]
+  {\normalsize Materi ini membahas proses pembentukan citra mulai dari aspek fisik cahaya hingga representasi digitalnya.}
 }
 \author{}
 \date{}
@@ -575,4 +580,3 @@ print(np.round(A_total, 4))
 \end{center}
  
 \end{document}
- 
