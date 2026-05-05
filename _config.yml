@@ -1,10 +1,10 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: noteify
+description: used by me, to manage all the lecture/study notes.
 theme: just-the-docs
-source: .
-destination: ./_site
 
-url: https://just-the-docs.github.io
+
+url: https://0xfrq.github.io/
+baseurl: noteify/
 
 aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+  Repository: https://github.com/0xfrq/noteify
