@@ -5,41 +5,111 @@ layout: null
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <title>PDF Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         body, html {
             margin: 0;
             padding: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #525659;
+            background-color: #323639;
+            font-family: sans-serif;
         }
-        iframe {
+        #pdf-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
-            height: 100%;
-            border: none;
+            padding: 10px 0;
+        }
+        .page-container {
+            margin-bottom: 10px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            max-width: 100%;
+        }
+        canvas {
             display: block;
+            width: 100%;
+            height: auto;
+        }
+        #loading {
+            color: #ddd;
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 1.2rem;
         }
     </style>
 </head>
 <body>
-    <iframe id="pdf-frame" type="application/pdf"></iframe>
+    <div id="loading">Loading PDF...</div>
+    <div id="pdf-container"></div>
 
     <script>
+        // Set up the worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
         const urlParams = new URLSearchParams(window.location.search);
-        let fileUrl = urlParams.get('file') || '{{ "/assets/materials/pcd/rendered/2notes.pdf" | relative_url }}';
+        let fileUrl = urlParams.get('file');
         
-        /* Handle relative URLs correctly according to Jekyll's baseurl */
+        if (!fileUrl) {
+            fileUrl = '{{ "/assets/materials/pcd/rendered/2notes.pdf" | relative_url }}';
+        }
+
+        // Handle relative URLs correctly according to Jekyll's baseurl
         const baseurl = '{{ site.baseurl }}';
         if (fileUrl.startsWith('/assets')) {
             fileUrl = baseurl.replace(/\/$/, '') + fileUrl;
         }
-        
-        const frame = document.getElementById('pdf-frame');
-        frame.src = fileUrl;
+
         document.title = fileUrl.split('/').pop() + " - PDF Viewer";
+
+        const container = document.getElementById('pdf-container');
+        const loading = document.getElementById('loading');
+
+        async function renderPDF(url) {
+            try {
+                const loadingTask = pdfjsLib.getDocument(url);
+                const pdf = await loadingTask.promise;
+                
+                loading.style.display = 'none';
+
+                // Use scale 1.5 to make it crisp on mobile and retina displays
+                // The CSS 'width: 100%' handles adjusting it down visually
+                const scale = 1.5;
+
+                // Sequentially render each page as a new canvas block (Continuous Scroll)
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: scale });
+
+                    const pageWrapper = document.createElement('div');
+                    pageWrapper.className = 'page-container';
+                    
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    // We only render one page at a time smoothly 
+                    // before appending the next to avoid stutter.
+                    pageWrapper.appendChild(canvas);
+                    container.appendChild(pageWrapper);
+
+                    const renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+                    
+                    await page.render(renderContext).promise;
+                }
+            } catch (error) {
+                loading.innerText = 'Error loading PDF: ' + error.message;
+                console.error(error);
+            }
+        }
+
+        renderPDF(fileUrl);
     </script>
 </body>
 </html>
