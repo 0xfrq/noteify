@@ -1,0 +1,6 @@
+Collecting attrs
+  Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+   ---------------------------------------- 67.5/67.5 kB 280.9 kB/s eta 0:00:00
+Installing collected packages: attrs
+Successfully installed attrs-26.1.0

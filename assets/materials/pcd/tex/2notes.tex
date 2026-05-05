@@ -1,0 +1,578 @@
+\documentclass[12pt,a4paper]{article}
+ 
+% ─── Package ───────────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+ 
+\geometry{margin=2.5cm}
+ 
+% ─── Warna Tema ────────────────────────────────────────────────────────────────
+\definecolor{codebg}{RGB}{245,247,250}
+\definecolor{codeframe}{RGB}{180,195,215}
+\definecolor{keywordcolor}{RGB}{0,112,192}
+\definecolor{commentcolor}{RGB}{100,160,100}
+\definecolor{stringcolor}{RGB}{180,70,50}
+\definecolor{notebg}{RGB}{255,249,230}
+\definecolor{noteframe}{RGB}{230,180,50}
+\definecolor{tipbg}{RGB}{230,245,235}
+\definecolor{tipframe}{RGB}{50,160,90}
+\definecolor{sectioncolor}{RGB}{30,80,150}
+ 
+% ─── Style Section ─────────────────────────────────────────────────────────────
+\titleformat{\section}{\Large\bfseries\color{sectioncolor}}{}{0em}{\thesection\quad}[\titlerule]
+\titleformat{\subsection}{\large\bfseries\color{sectioncolor!80}}{}{0em}{\thesubsection\quad}
+ 
+% ─── Listings (Python) ─────────────────────────────────────────────────────────
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeframe},
+  framerule=0.8pt,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries\color{keywordcolor},
+  commentstyle=\itshape\color{commentcolor},
+  stringstyle=\color{stringcolor},
+  showstringspaces=false,
+  breaklines=true,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  tabsize=4,
+  captionpos=b,
+}
+\lstset{style=pythonstyle}
+ 
+% ─── Kotak Catatan & Tips ──────────────────────────────────────────────────────
+\newmdenv[
+  backgroundcolor=notebg,
+  linecolor=noteframe,
+  linewidth=2pt,
+  leftline=true, topline=false, rightline=false, bottomline=false,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+  skipabove=8pt, skipbelow=8pt
+]{notebox}
+ 
+\newmdenv[
+  backgroundcolor=tipbg,
+  linecolor=tipframe,
+  linewidth=2pt,
+  leftline=true, topline=false, rightline=false, bottomline=false,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+  innertopmargin=6pt, innerbottommargin=6pt,
+  skipabove=8pt, skipbelow=8pt
+]{tipbox}
+ 
+% ─── Header / Footer ───────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Pengolahan Citra Digital -- Bab 2}}
+\fancyhead[R]{\small\textit{Dasar-Dasar Pembentukan Citra}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+ 
+% ─── Judul ─────────────────────────────────────────────────────────────────────
+\title{
+  {\LARGE\bfseries Pengolahan Citra Digital}\\[0.5em]
+  {\large Bab 2: Dasar-Dasar Pembentukan Citra}\\[0.3em]
+  {\normalsize Catatan Kuliah dengan Penjelasan \& Contoh Kode Python}
+}
+\author{}
+\date{}
+ 
+% ===============================================================================
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+\tableofcontents
+\newpage
+ 
+% ===============================================================================
+\section{Persepsi Visual Manusia}
+\label{sec:visual}
+ 
+\subsection{Kenapa Perlu Belajar Tentang Mata?}
+ 
+Mungkin kamu bertanya-tanya, \textit{``Ini kan kuliah teknik, ngapain bahas mata manusia?''}
+Alasannya cukup masuk akal: sebagian besar citra digital yang kita proses pada akhirnya
+dikonsumsi oleh manusia. Jadi kalau kita tidak paham cara kerja mata, bisa jadi algoritma
+yang kita buat terlalu berlebihan atau malah kurang pas.
+ 
+Bayangkan kamu sibuk \textit{sharpening} (mempertajam) gambar selama berjam-jam, padahal
+mata manusia sudah punya mekanisme penajaman alaminya sendiri.
+ 
+\subsection{Adaptasi dan Diskriminasi Kecerahan}
+ 
+Mata manusia itu fleksibel banget. Berbeda dengan kamera yang punya rentang dinamis
+(\textit{dynamic range}) tetap, mata kita terus-menerus menyesuaikan diri dengan tingkat
+cahaya rata-rata di sekitar kita, yang biasa disebut \textbf{level adaptasi} $B_a$.
+ 
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Rentang total:} Sangat luas -- dari cahaya bintang yang redup sampai
+        sinar matahari terik.
+  \item \textbf{Rentang pada satu waktu:} Hanya sebagian kecil di sekitar $B_a$. Makanya
+        kita susah melihat detail di area yang sangat gelap \textit{dan} sangat terang
+        sekaligus.
+\end{itemize}
+ 
+\subsection{Fenomena Visual Penting}
+ 
+\subsubsection{Mach Bands}
+ 
+Kalau ada dua area dengan intensitas berbeda yang bersebelahan, mata kita akan
+``merasakan'' garis terang atau gelap \textit{semu} di perbatasannya -- padahal secara
+fisik intensitasnya konstan. Fenomena ini disebut \textbf{Mach Bands}.
+ 
+\begin{tipbox}
+  \textbf{Implikasi praktis:} Karena mata sudah ``mempertajam'' perbatasan secara alami,
+  kita perlu hati-hati saat menerapkan algoritma \textit{sharpening} berlebihan. Hasilnya
+  bisa terlihat tidak natural.
+\end{tipbox}
+ 
+\subsubsection{Simultaneous Contrast}
+ 
+Persepsi kecerahan suatu objek sangat dipengaruhi oleh latar belakangnya. Kotak
+abu-abu yang sama persis akan terlihat \textit{lebih gelap} jika ditempatkan di atas
+latar putih, dibandingkan jika ditempatkan di atas latar hitam.
+ 
+\begin{notebox}
+  \textbf{Pertanyaan Reflektif:} Jika mata sudah melakukan ``penajaman alami'' seperti
+  Mach Bands, apakah kita perlu mempertajam citra digital secara agresif lewat algoritma?
+  Tidak selalu -- tergantung konteks dan tujuan penggunaannya.
+\end{notebox}
+ 
+% ===============================================================================
+\section{Cahaya dan Spektrum Elektromagnetik}
+\label{sec:em}
+ 
+\subsection{Citra sebagai Energi Elektromagnetik}
+ 
+Citra yang kita olah umumnya berasal dari energi elektromagnetik (EM) -- bisa cahaya
+tampak, inframerah, sinar-X, dan lain-lain. Pemahaman tentang sifat EM penting agar
+kita tahu \textit{apa yang sebenarnya kita ukur}.
+ 
+\subsection{Sifat Gelombang}
+ 
+Hubungan fundamental antara panjang gelombang $\lambda$, frekuensi $\nu$, dan kecepatan
+cahaya $c$:
+ 
+\begin{equation}
+  \lambda \nu = c
+  \label{eq:wave}
+\end{equation}
+ 
+di mana $c \approx 3 \times 10^8\ \text{m/s}$. Cahaya tampak oleh manusia berada pada
+rentang $\lambda \approx 400\text{--}700\ \text{nm}$.
+ 
+\subsection{Sifat Partikel (Foton)}
+ 
+Dalam model kuantum, energi satu foton $E$ berbanding lurus dengan frekuensinya:
+ 
+\begin{equation}
+  E = h\nu
+  \label{eq:photon}
+\end{equation}
+ 
+di mana $h = 6.626 \times 10^{-34}\ \text{J}\cdot\text{s}$ adalah konstanta Planck.
+ 
+\begin{notebox}
+  \textbf{Intuisi:} Sinar-X punya frekuensi jauh lebih tinggi dari cahaya tampak, sehingga
+  energi fotonnya lebih besar. Inilah kenapa sinar-X bisa menembus jaringan tubuh, sementara
+  cahaya tampak tidak bisa.
+\end{notebox}
+ 
+% ===============================================================================
+\section{Akuisisi Citra dan Model Pembentukan Citra}
+\label{sec:akuisisi}
+ 
+\subsection{Bagaimana Citra Terbentuk?}
+ 
+Secara sederhana, proses pembentukan citra adalah:
+\begin{enumerate}
+  \item Sumber cahaya memancarkan energi ke pemandangan (\textit{scene}).
+  \item Objek memantulkan atau meneruskan cahaya tersebut.
+  \item Sensor (misalnya CCD pada kamera digital) menangkap energi yang sampai.
+  \item Hasilnya direkam sebagai citra digital.
+\end{enumerate}
+ 
+\subsection{Model Matematis: Fungsi Citra}
+ 
+Sebuah citra didefinisikan sebagai fungsi dua dimensi:
+ 
+\begin{equation}
+  f(x, y) = i(x, y) \cdot r(x, y)
+  \label{eq:image_model}
+\end{equation}
+ 
+\noindent di mana:
+\begin{itemize}
+  \item $i(x,y)$ -- \textbf{Iluminasi} (\textit{illumination}): jumlah cahaya yang jatuh
+        pada titik $(x,y)$. Nilainya selalu positif:
+        \[0 < i(x,y) < \infty\]
+  \item $r(x,y)$ -- \textbf{Reflektansi} (\textit{reflectance}): proporsi cahaya yang
+        dipantulkan oleh objek. Nilainya antara 0 dan 1:
+        \[0 \leq r(x,y) \leq 1\]
+        Nilai $r = 0$ berarti objek menyerap semua cahaya (hitam sempurna), sedangkan
+        $r = 1$ berarti memantulkan semua cahaya (putih sempurna).
+\end{itemize}
+ 
+\begin{tipbox}
+  \textbf{Analogi gampang:} Bayangkan kamu menyorotkan senter ke dinding.
+  $i(x,y)$ adalah seberapa kuat senternya, sedangkan $r(x,y)$ adalah seberapa
+  ``putih'' dindingnya. Hasil yang kamera tangkap adalah perkalian keduanya -- $f(x,y)$.
+\end{tipbox}
+ 
+% ===============================================================================
+\section{Sampling dan Kuantisasi}
+\label{sec:sampling}
+ 
+\subsection{Dari Dunia Nyata ke Komputer}
+ 
+Dunia nyata itu kontinu -- intensitas cahaya bisa bernilai apa saja di sembarang titik.
+Komputer, di sisi lain, hanya bisa menangani bilangan diskret. Di sinilah peran
+\textit{sampling} dan \textit{kuantisasi}.
+ 
+\begin{itemize}
+  \item \textbf{Sampling} -- Digitalisasi koordinat spasial $(x, y)$. Menentukan berapa
+        banyak pixel yang ada (resolusi spasial).
+  \item \textbf{Kuantisasi} -- Digitalisasi nilai intensitas $f$. Menentukan berapa banyak
+        tingkat keabuan yang tersedia (resolusi intensitas).
+\end{itemize}
+ 
+\subsection{Representasi Matriks}
+ 
+Sebuah citra berukuran $M \times N$ direpresentasikan sebagai matriks:
+ 
+\begin{equation}
+  \mathbf{A} =
+  \begin{pmatrix}
+    a_{0,0}   & a_{0,1}   & \cdots & a_{0,N-1}   \\
+    a_{1,0}   & a_{1,1}   & \cdots & a_{1,N-1}   \\
+    \vdots    & \vdots    & \ddots & \vdots      \\
+    a_{M-1,0} & a_{M-1,1} & \cdots & a_{M-1,N-1}
+  \end{pmatrix}
+  \label{eq:matrix}
+\end{equation}
+ 
+Setiap elemen $a_{i,j}$ disebut \textbf{pixel} (\textit{picture element}).
+ 
+\subsection{Kebutuhan Penyimpanan}
+ 
+Jika citra memiliki $L = 2^k$ tingkat intensitas, maka jumlah bit yang
+dibutuhkan untuk menyimpan citra $M \times N$ adalah:
+ 
+\begin{equation}
+  b = M \times N \times k
+  \label{eq:storage}
+\end{equation}
+ 
+\begin{notebox}
+  \textbf{Contoh:} Citra \textit{grayscale} 8-bit ($k=8$, artinya $L=256$ level) berukuran
+  $1920 \times 1080$ membutuhkan:
+  \[b = 1920 \times 1080 \times 8 = 16{,}588{,}800\ \text{bit} \approx 1.98\ \text{MB}\]
+  Ini adalah ukuran sebelum kompresi. Format JPEG atau PNG mengompresi lebih lanjut.
+\end{notebox}
+ 
+\subsection{Contoh Kode Python}
+ 
+\begin{lstlisting}[caption={Membaca citra dan memeriksa properti dasarnya},
+                   label={lst:basic}]
+import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
+ 
+# Baca citra dan konversi ke grayscale
+img = Image.open("contoh.jpg").convert("L")   # "L" = grayscale
+A   = np.array(img)                           # Konversi ke NumPy array
+ 
+M, N = A.shape
+k    = 8                                      # Bit-depth (asumsi 8-bit)
+L    = 2**k                                   # Jumlah level: 256
+ 
+print(f"Ukuran citra  : {M} x {N} pixel")
+print(f"Bit-depth     : {k} bit  =>  L = {L} tingkat keabuan")
+print(f"Kebutuhan bit : {M*N*k:,} bit  ({M*N*k/8/1024:.1f} KB)")
+print(f"Nilai min     : {A.min()}")
+print(f"Nilai max     : {A.max()}")
+ 
+# Tampilkan citra dan histogram intensitas
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+ 
+axes[0].imshow(A, cmap="gray", vmin=0, vmax=255)
+axes[0].set_title("Citra Grayscale")
+axes[0].axis("off")
+ 
+axes[1].hist(A.ravel(), bins=256, range=(0, 255),
+             color="steelblue", edgecolor="none")
+axes[1].set_title("Histogram Intensitas")
+axes[1].set_xlabel("Nilai Pixel")
+axes[1].set_ylabel("Frekuensi")
+ 
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+ 
+% ===============================================================================
+\section{Hubungan Antar Pixel}
+\label{sec:hubungan}
+ 
+\subsection{Konsep Ketetanggaan (\textit{Neighborhood})}
+ 
+Untuk berbagai operasi seperti segmentasi atau deteksi tepi, kita perlu tahu pixel mana
+yang dianggap ``bertetangga'' dengan pixel $p$ di koordinat $(x, y)$.
+ 
+\subsubsection{4-Tetangga: $N_4(p)$}
+ 
+Hanya pixel di atas, bawah, kiri, dan kanan:
+\begin{equation}
+  N_4(p) = \{(x+1,y),\ (x-1,y),\ (x,y+1),\ (x,y-1)\}
+\end{equation}
+ 
+\subsubsection{8-Tetangga: $N_8(p)$}
+ 
+$N_4(p)$ ditambah keempat tetangga diagonal $N_D(p)$:
+\begin{equation}
+  N_8(p) = N_4(p) \cup N_D(p)
+\end{equation}
+ 
+\subsection{Jenis Ketertetanggaan (\textit{Adjacency})}
+ 
+\begin{itemize}
+  \item \textbf{4-adjacency:} Dua pixel bertetangga jika salah satunya ada di $N_4$
+        pixel lainnya.
+  \item \textbf{8-adjacency:} Dua pixel bertetangga jika salah satunya ada di $N_8$
+        pixel lainnya.
+  \item \textbf{m-adjacency} (mixed): Kombinasi 4- dan 8-adjacency untuk menghilangkan
+        ambiguitas jalur. Berguna saat definisi ``path'' perlu unik.
+\end{itemize}
+ 
+\subsection{Ukuran Jarak}
+ 
+Diberikan dua pixel $p = (x, y)$ dan $q = (u, v)$:
+ 
+\begin{align}
+  D_e(p,q) &= \sqrt{(x-u)^2 + (y-v)^2}
+  \quad \text{(Euclidean)} \label{eq:eucl} \\[6pt]
+  D_4(p,q) &= |x-u| + |y-v|
+  \quad \text{(City-block / Manhattan)} \label{eq:city} \\[6pt]
+  D_8(p,q) &= \max\bigl(|x-u|,\ |y-v|\bigr)
+  \quad \text{(Chessboard)} \label{eq:chess}
+\end{align}
+ 
+\begin{notebox}
+  \textbf{Analogi:}
+  \begin{itemize}[nosep]
+    \item $D_e$ -- jarak garis lurus seperti burung terbang.
+    \item $D_4$ -- jarak berjalan di kota Manhattan yang jalannya berbentuk grid.
+    \item $D_8$ -- jarak yang ditempuh raja di papan catur.
+  \end{itemize}
+\end{notebox}
+ 
+\subsection{Contoh Kode Python}
+ 
+\begin{lstlisting}[caption={Menghitung tiga jenis jarak antar pixel},
+                   label={lst:distance}]
+import numpy as np
+import matplotlib.pyplot as plt
+ 
+def euclidean(p, q):
+    """Jarak Euclidean -- garis lurus."""
+    return np.sqrt((p[0]-q[0])**2 + (p[1]-q[1])**2)
+ 
+def city_block(p, q):
+    """City-block (D4) -- berjalan di grid Manhattan."""
+    return abs(p[0]-q[0]) + abs(p[1]-q[1])
+ 
+def chessboard(p, q):
+    """Chessboard (D8) -- gerakan raja di catur."""
+    return max(abs(p[0]-q[0]), abs(p[1]-q[1]))
+ 
+# Uji coba
+p = (0, 0)
+q = (3, 4)
+print(f"Pixel p = {p},  pixel q = {q}")
+print(f"D_euclidean = {euclidean(p, q):.4f}")   # => 5.0000
+print(f"D_4         = {city_block(p, q)}")       # => 7
+print(f"D_8         = {chessboard(p, q)}")        # => 4
+ 
+# Visualisasi area dengan jarak <= 2 dari pusat
+center = (5, 5)
+radius = 2
+size   = 11
+ 
+fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+titles = ["D4 (City-block) <= 2", "D8 (Chessboard) <= 2"]
+ 
+for ax, dist_fn, title in zip(axes, [city_block, chessboard], titles):
+    grid = np.zeros((size, size))
+    for r in range(size):
+        for c in range(size):
+            if dist_fn(center, (r, c)) <= radius:
+                grid[r, c] = 1
+    ax.imshow(grid, cmap="Blues", vmin=0, vmax=1.5)
+    ax.plot(center[1], center[0], "ro", markersize=8, label="Pusat")
+    ax.set_title(title)
+    ax.legend()
+ 
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+ 
+% ===============================================================================
+\section{Perangkat Matematika Utama}
+\label{sec:math}
+ 
+\subsection{Operasi Elementwise}
+ 
+Hampir semua operasi pada citra bersifat \textit{elementwise} -- dilakukan
+pixel demi pixel secara independen. Misalnya, menjumlahkan dua citra:
+ 
+\begin{equation}
+  g(x,y) = f_1(x,y) + f_2(x,y) \quad \forall\,(x,y)
+\end{equation}
+ 
+Di Python dengan NumPy, operasi ini dilakukan secara otomatis dan efisien lewat mekanisme
+\textit{broadcasting}.
+ 
+\subsection{Linearitas dan Prinsip Superposisi}
+ 
+Sebuah operator $H$ disebut \textbf{linear} jika memenuhi prinsip superposisi:
+ 
+\begin{equation}
+  H\bigl[a\,f_1 + b\,f_2\bigr] = a\,H[f_1] + b\,H[f_2]
+  \label{eq:linear}
+\end{equation}
+ 
+Ini penting karena banyak teori pengolahan citra -- termasuk Transformasi Fourier --
+mengasumsikan sistem yang linear. Kalau operator tidak linear, banyak teori tersebut
+tidak bisa dipakai langsung.
+ 
+\begin{tipbox}
+  \textbf{Cek linearitas dengan cepat:} Uji apakah $H[\mathbf{0}] = \mathbf{0}$.
+  Jika tidak, operator tersebut pasti tidak linear. Contoh: $H[f] = f + 5$
+  tidak linear karena $H[0] = 5 \neq 0$.
+\end{tipbox}
+ 
+\subsection{Transformasi Affine (Geometris)}
+ 
+Untuk memanipulasi posisi pixel (rotasi, scaling, translasi), digunakan
+\textbf{koordinat homogen}. Transformasi dinyatakan sebagai perkalian matriks $3\times3$:
+ 
+\begin{equation}
+  \begin{pmatrix} x' \\ y' \\ 1 \end{pmatrix}
+  = \mathbf{A}
+  \begin{pmatrix} x \\ y \\ 1 \end{pmatrix}
+  \label{eq:affine}
+\end{equation}
+ 
+\noindent Beberapa contoh matriks transformasi $\mathbf{A}$:
+ 
+\begin{align}
+  \text{Translasi:}\quad
+  \mathbf{A}_T &=
+  \begin{pmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{pmatrix}
+  \label{eq:translation} \\[8pt]
+  \text{Rotasi sebesar } \theta:\quad
+  \mathbf{A}_R &=
+  \begin{pmatrix} \cos\theta & -\sin\theta & 0 \\ \sin\theta & \cos\theta & 0 \\ 0 & 0 & 1 \end{pmatrix}
+  \label{eq:rotation} \\[8pt]
+  \text{Scaling:}\quad
+  \mathbf{A}_S &=
+  \begin{pmatrix} s_x & 0 & 0 \\ 0 & s_y & 0 \\ 0 & 0 & 1 \end{pmatrix}
+  \label{eq:scaling}
+\end{align}
+ 
+\noindent Keuntungan koordinat homogen: komposisi transformasi cukup dengan
+mengalikan matriks-matriks tersebut:
+\[
+  \mathbf{A}_{\text{total}} = \mathbf{A}_T \cdot \mathbf{A}_R \cdot \mathbf{A}_S
+\]
+ 
+\subsection{Contoh Kode Python}
+ 
+\begin{lstlisting}[caption={Transformasi Affine: rotasi, translasi, dan scaling},
+                   label={lst:affine}]
+import numpy as np
+import cv2
+import matplotlib.pyplot as plt
+ 
+img = cv2.imread("contoh.jpg", cv2.IMREAD_GRAYSCALE)
+M, N = img.shape           # Tinggi, Lebar
+ 
+# 1. Rotasi 30 derajat terhadap pusat citra
+pusat = (N // 2, M // 2)
+A_rot = cv2.getRotationMatrix2D(pusat, angle=30, scale=1.0)
+img_rot = cv2.warpAffine(img, A_rot, (N, M))
+ 
+# 2. Translasi: geser 50px ke kanan, 30px ke bawah
+A_trans = np.float32([[1, 0, 50],
+                       [0, 1, 30]])
+img_trans = cv2.warpAffine(img, A_trans, (N, M))
+ 
+# 3. Scaling: perbesar 1.5x
+A_scale = np.float32([[1.5, 0,   0],
+                       [0,   1.5, 0]])
+img_scale = cv2.warpAffine(img, A_scale, (N, M))
+ 
+# Tampilkan hasil
+fig, axes = plt.subplots(1, 4, figsize=(14, 4))
+for ax, im, title in zip(axes,
+                          [img, img_rot, img_trans, img_scale],
+                          ["Original", "Rotasi 30 deg",
+                           "Translasi", "Scaling 1.5x"]):
+    ax.imshow(im, cmap="gray")
+    ax.set_title(title)
+    ax.axis("off")
+plt.tight_layout()
+plt.show()
+ 
+# Bonus: komposisi transformasi via perkalian matriks 3x3
+theta  = np.radians(30)
+A_rot3 = np.array([[ np.cos(theta), -np.sin(theta), 0],
+                    [ np.sin(theta),  np.cos(theta), 0],
+                    [ 0,              0,             1]])
+A_tra3 = np.array([[1, 0, 50],
+                    [0, 1, 30],
+                    [0, 0,  1]])
+ 
+# Rotasi LALU translasi -- cukup kalikan matriksnya
+A_total = A_tra3 @ A_rot3
+print("Matriks transformasi total (rotasi -> translasi):")
+print(np.round(A_total, 4))
+\end{lstlisting}
+ 
+% ===============================================================================
+\section*{Ringkasan}
+\addcontentsline{toc}{section}{Ringkasan}
+ 
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  \textbf{Topik} & \textbf{Konsep Kunci} & \textbf{Persamaan Utama} \\
+  \midrule
+  Persepsi Visual    & Adaptasi $B_a$, Mach Bands, Contrast  & -- \\
+  Spektrum EM        & Gelombang \& foton                    & $\lambda\nu=c$,\ $E=h\nu$ \\
+  Model Citra        & Iluminasi $\times$ Reflektansi         & $f=i\cdot r$ \\
+  Sampling \& Kuant. & Resolusi spasial \& intensitas         & $b=M\times N\times k$ \\
+  Ketertetanggaan    & $N_4$, $N_8$, $D_e$, $D_4$, $D_8$   & Pers.~\eqref{eq:eucl}--\eqref{eq:chess} \\
+  Transformasi       & Linearitas, Affine, Koordinat Homogen & Pers.~\eqref{eq:linear},~\eqref{eq:affine} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+ 
+\end{document}
+ 
