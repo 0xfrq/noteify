@@ -63,10 +63,10 @@ search_exclude: true
   let fileUrl = urlParams.get('file');
 
   if (!fileUrl) {
-    fileUrl = '{{ site.baseurl }}/assets/materials/pcd/rendered/2notes.pdf'; // Example fallback
+    fileUrl = '{{ site.baseurl }}/assets/materials/pcd/rendered/2notes.pdf'; /* Example fallback */
   }
 
-  // Generate correct domain path if baseurl is set
+  /* Generate correct domain path if baseurl is set */
   const baseurl = '{{ site.baseurl }}';
   if (fileUrl.startsWith('/assets')) {
      fileUrl = baseurl + fileUrl;
