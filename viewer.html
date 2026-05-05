@@ -407,34 +407,10 @@ layout: null
 
   <div class="tb-sep"></div>
 
-  <!-- File open -->
+  <!-- Dark mode -->
   <div class="tb-group">
-    <button class="tb-btn" data-tip="Open file" onclick="document.getElementById('file-input').click()">
-      <svg viewBox="0 0 24 24"><path d="M4 4h5l2 2h9a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>
-    </button>
-    <input type="file" id="file-input" accept=".pdf" style="display:none" onchange="openLocalFile(event)">
-  </div>
-
-  <div class="tb-sep"></div>
-
-  <!-- Navigation -->
-  <div class="tb-group">
-    <button class="tb-btn" data-tip="First page" onclick="goToPage(1)">
-      <svg viewBox="0 0 24 24"><path d="M6 6v12M18 6l-8 6 8 6V6z"/></svg>
-    </button>
-    <button class="tb-btn" data-tip="Previous page" onclick="changePage(-1)">
-      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <div class="page-nav">
-      <input type="number" id="page-input" min="1" value="1" onchange="goToPage(parseInt(this.value))" onkeydown="if(event.key==='Enter')goToPage(parseInt(this.value))">
-      <span>/</span>
-      <span id="page-total">–</span>
-    </div>
-    <button class="tb-btn" data-tip="Next page" onclick="changePage(1)">
-      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-    </button>
-    <button class="tb-btn" data-tip="Last page" onclick="goToPage(totalPages)">
-      <svg viewBox="0 0 24 24"><path d="M18 6v12M6 6l8 6-8 6V6z"/></svg>
+    <button class="tb-btn" id="btn-dark" data-tip="Dark mode (invert B&W)" onclick="toggleDarkMode()">
+      <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
   </div>
 
@@ -463,6 +439,30 @@ layout: null
 
   <div class="tb-sep"></div>
 
+  <!-- Navigation -->
+  <div class="tb-group">
+    <button class="tb-btn" data-tip="First page" onclick="goToPage(1)">
+      <svg viewBox="0 0 24 24"><path d="M6 6v12M18 6l-8 6 8 6V6z"/></svg>
+    </button>
+    <button class="tb-btn" data-tip="Previous page" onclick="changePage(-1)">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="page-nav">
+      <input type="number" id="page-input" min="1" value="1" onchange="goToPage(parseInt(this.value))" onkeydown="if(event.key==='Enter')goToPage(parseInt(this.value))">
+      <span>/</span>
+      <span id="page-total">–</span>
+    </div>
+    <button class="tb-btn" data-tip="Next page" onclick="changePage(1)">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="tb-btn" data-tip="Last page" onclick="goToPage(totalPages)">
+      <svg viewBox="0 0 24 24"><path d="M18 6v12M6 6l8 6-8 6V6z"/></svg>
+    </button>
+  </div>
+
+
+  <div class="tb-sep"></div>
+
   <!-- Rotation -->
   <div class="tb-group">
     <button class="tb-btn" data-tip="Rotate left" onclick="rotatePages(-90)">
@@ -482,14 +482,6 @@ layout: null
     </button>
   </div>
 
-  <div class="tb-sep"></div>
-
-  <!-- Dark mode -->
-  <div class="tb-group">
-    <button class="tb-btn" id="btn-dark" data-tip="Dark mode (invert B&W)" onclick="toggleDarkMode()">
-      <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-  </div>
 
   <div class="tb-sep"></div>
 
