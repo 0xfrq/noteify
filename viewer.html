@@ -1,148 +1,45 @@
 ---
-layout: default
-title: PDF Viewer
-nav_exclude: true
-search_exclude: true
+layout: null
 ---
-
-<style>
-  #pdf-viewer-container {
-    width: 100%;
-    height: 80vh;
-    position: relative;
-    overflow: auto;
-    background-color: #f7f7f7;
-    border: 1px solid #ccc;
-  }
-  #pdf-render {
-    width: 100%;
-    display: block;
-    margin: 0 auto;
-  }
-  .pdf-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    padding: 10px;
-    background: #eee;
-    border-radius: 5px;
-  }
-  .pdf-controls button {
-    padding: 5px 15px;
-    cursor: pointer;
-  }
-</style>
-
-<div class="pdf-controls">
-  <button id="prev-page">Previous</button>
-  <span id="page-num-indicator">Page: <span id="page-num"></span> / <span id="page-count"></span></span>
-  <button id="next-page">Next</button>
-  <button id="zoom-out">Zoom Out</button>
-  <button id="zoom-in">Zoom In</button>
-</div>
-
-<div id="pdf-viewer-container">
-  <canvas id="pdf-render"></canvas>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-  let pdfDoc = null,
-      pageNum = 1,
-      pageIsRendering = false,
-      pageNumIsPending = null,
-      scale = 1.5,
-      canvas = document.getElementById('pdf-render'),
-      ctx = canvas.getContext('2d');
-
-  const urlParams = new URLSearchParams(window.location.search);
-  let fileUrl = urlParams.get('file');
-
-  if (!fileUrl) {
-    fileUrl = '{{ site.baseurl }}/assets/materials/pcd/rendered/2notes.pdf'; /* Example fallback */
-  }
-
-  /* Generate correct domain path if baseurl is set */
-  const baseurl = '{{ site.baseurl }}';
-  if (fileUrl.startsWith('/assets')) {
-     fileUrl = baseurl + fileUrl;
-  }
-
-  const renderPage = num => {
-    pageIsRendering = true;
-
-    pdfDoc.getPage(num).then(page => {
-      const viewport = page.getViewport({ scale: scale });
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
-
-      const renderCtx = {
-        canvasContext: ctx,
-        viewport: viewport
-      };
-
-      page.render(renderCtx).promise.then(() => {
-        pageIsRendering = false;
-
-        if (pageNumIsPending !== null) {
-          renderPage(pageNumIsPending);
-          pageNumIsPending = null;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #525659;
         }
-      });
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="pdf-frame" type="application/pdf"></iframe>
 
-      document.getElementById('page-num').textContent = num;
-    });
-  };
-
-  const queueRenderPage = num => {
-    if (pageIsRendering) {
-      pageNumIsPending = num;
-    } else {
-      renderPage(num);
-    }
-  };
-
-  const showPrevPage = () => {
-    if (pageNum <= 1) return;
-    pageNum--;
-    queueRenderPage(pageNum);
-  };
-
-  const showNextPage = () => {
-    if (pageNum >= pdfDoc.numPages) return;
-    pageNum++;
-    queueRenderPage(pageNum);
-  };
-
-  document.getElementById('prev-page').addEventListener('click', showPrevPage);
-  document.getElementById('next-page').addEventListener('click', showNextPage);
-  
-  document.getElementById('zoom-in').addEventListener('click', () => {
-    scale += 0.25;
-    queueRenderPage(pageNum);
-  });
-  
-  document.getElementById('zoom-out').addEventListener('click', () => {
-    if(scale <= 0.5) return;
-    scale -= 0.25;
-    queueRenderPage(pageNum);
-  });
-
-  if (fileUrl) {
-    pdfjsLib.getDocument(fileUrl).promise.then(pdfDoc_ => {
-      pdfDoc = pdfDoc_;
-      document.getElementById('page-count').textContent = pdfDoc.numPages;
-      renderPage(pageNum);
-    }).catch(err => {
-      const div = document.createElement('div');
-      div.className = 'error';
-      div.appendChild(document.createTextNode('Error loading PDF: ' + err.message));
-      document.getElementById('pdf-viewer-container').appendChild(div);
-      console.error('Error loading PDF:', err);
-    });
-  }
-</script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        let fileUrl = urlParams.get('file') || '{{ "/assets/materials/pcd/rendered/2notes.pdf" | relative_url }}';
+        
+        /* Handle relative URLs correctly according to Jekyll's baseurl */
+        const baseurl = '{{ site.baseurl }}';
+        if (fileUrl.startsWith('/assets')) {
+            fileUrl = baseurl.replace(/\/$/, '') + fileUrl;
+        }
+        
+        const frame = document.getElementById('pdf-frame');
+        frame.src = fileUrl;
+        document.title = fileUrl.split('/').pop() + " - PDF Viewer";
+    </script>
+</body>
+</html>
