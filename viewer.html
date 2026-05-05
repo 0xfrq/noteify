@@ -4,112 +4,1104 @@ layout: null
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
-    <title>PDF Viewer</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            background-color: #323639;
-            font-family: sans-serif;
-        }
-        #pdf-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            padding: 10px 0;
-        }
-        .page-container {
-            margin-bottom: 10px;
-            background-color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            max-width: 100%;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-        #loading {
-            color: #ddd;
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 1.2rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>PDF Viewer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    :root {
+      --toolbar-bg: #1e1e2e;
+      --toolbar-border: #313244;
+      --toolbar-text: #cdd6f4;
+      --toolbar-icon: #a6adc8;
+      --btn-hover: #313244;
+      --btn-active: #45475a;
+      --accent: #89b4fa;
+      --accent-hover: #74c7ec;
+      --canvas-bg: #2a2a3a;
+      --page-shadow: 0 4px 24px rgba(0,0,0,0.55);
+      --input-bg: #313244;
+      --input-border: #45475a;
+      --toast-bg: #313244;
+      --scrollbar-track: #181825;
+      --scrollbar-thumb: #45475a;
+      --sidebar-bg: #181825;
+      --sidebar-border: #313244;
+      --thumb-hover: #585b70;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+      background: var(--canvas-bg);
+      color: var(--toolbar-text);
+    }
+
+    /* ── TOOLBAR ── */
+    #toolbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 52px;
+      background: var(--toolbar-bg);
+      border-bottom: 1px solid var(--toolbar-border);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0 10px;
+      z-index: 100;
+      user-select: none;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+
+    .tb-group {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .tb-sep {
+      width: 1px;
+      height: 28px;
+      background: var(--toolbar-border);
+      margin: 0 6px;
+      flex-shrink: 0;
+    }
+
+    .tb-spacer { flex: 1; }
+
+    .tb-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      color: var(--toolbar-icon);
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .tb-btn:hover { background: var(--btn-hover); color: var(--toolbar-text); }
+    .tb-btn:active { background: var(--btn-active); }
+    .tb-btn.active { background: var(--btn-active); color: var(--accent); }
+    .tb-btn svg { width: 18px; height: 18px; fill: currentColor; pointer-events: none; }
+
+    /* page nav input */
+    .page-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--toolbar-icon);
+    }
+    #page-input {
+      width: 44px;
+      height: 30px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      color: var(--toolbar-text);
+      text-align: center;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #page-input:focus { border-color: var(--accent); }
+    #page-total { font-size: 13px; color: var(--toolbar-icon); }
+
+    /* zoom select */
+    #zoom-select {
+      height: 30px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      color: var(--toolbar-text);
+      font-size: 13px;
+      outline: none;
+      padding: 0 6px;
+      cursor: pointer;
+      min-width: 86px;
+      transition: border-color 0.15s;
+    }
+    #zoom-select:focus { border-color: var(--accent); }
+
+    /* title */
+    #pdf-title {
+      font-size: 12px;
+      color: var(--toolbar-icon);
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── SIDEBAR (thumbnails) ── */
+    #sidebar {
+      position: fixed;
+      top: 52px;
+      left: 0;
+      bottom: 0;
+      width: 180px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      overflow-y: auto;
+      z-index: 90;
+      padding: 10px 8px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.2s;
+    }
+    #sidebar.open { display: flex; }
+    .thumb-item {
+      cursor: pointer;
+      border-radius: 6px;
+      border: 2px solid transparent;
+      overflow: hidden;
+      transition: border-color 0.15s;
+      flex-shrink: 0;
+    }
+    .thumb-item:hover { border-color: var(--thumb-hover); }
+    .thumb-item.active { border-color: var(--accent); }
+    .thumb-item canvas { display: block; width: 100%; height: auto; }
+    .thumb-label {
+      text-align: center;
+      font-size: 10px;
+      color: var(--toolbar-icon);
+      padding: 2px 0 4px;
+    }
+
+    /* ── SEARCH BAR ── */
+    #search-bar {
+      position: fixed;
+      top: 52px;
+      right: 16px;
+      background: var(--toolbar-bg);
+      border: 1px solid var(--toolbar-border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      z-index: 95;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    #search-bar.open { display: flex; }
+    #search-input {
+      width: 200px;
+      height: 28px;
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      color: var(--toolbar-text);
+      font-size: 13px;
+      padding: 0 8px;
+      outline: none;
+    }
+    #search-input:focus { border-color: var(--accent); }
+    #search-count { font-size: 12px; color: var(--toolbar-icon); white-space: nowrap; min-width: 50px; }
+    .search-btn {
+      width: 28px; height: 28px;
+      background: transparent;
+      border: none;
+      border-radius: 5px;
+      color: var(--toolbar-icon);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .search-btn:hover { background: var(--btn-hover); color: var(--toolbar-text); }
+    .search-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* ── MAIN VIEWER ── */
+    #viewer-wrap {
+      position: fixed;
+      top: 52px; bottom: 0; right: 0;
+      left: 0;
+      overflow-y: scroll;
+      overflow-x: auto;
+    }
+    #viewer-wrap.sidebar-open { left: 180px; }
+
+    #pdf-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 40px;
+      min-height: 100%;
+    }
+
+    .page-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+      box-shadow: var(--page-shadow);
+      flex-shrink: 0;
+      background: white;
+    }
+    .page-wrapper canvas { display: block; }
+
+    /* text layer */
+    .page-wrapper .textLayer {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      opacity: 0.25;
+      line-height: 1;
+      pointer-events: auto;
+      user-select: text;
+    }
+    .page-wrapper .textLayer span {
+      color: transparent;
+      position: absolute;
+      white-space: pre;
+      cursor: text;
+      transform-origin: 0% 0%;
+    }
+    .page-wrapper .textLayer .highlight {
+      background-color: rgba(255, 220, 0, 0.6);
+      border-radius: 2px;
+    }
+    .page-wrapper .textLayer .highlight.selected {
+      background-color: rgba(0, 140, 255, 0.5);
+    }
+
+    /* annotation layer */
+    .page-wrapper .annotationLayer {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    /* ── DARK MODE (invert B&W) ── */
+    body.dark-mode .page-wrapper canvas {
+      filter: invert(1) hue-rotate(180deg);
+    }
+    /* Also invert thumbnails in dark mode */
+    body.dark-mode .thumb-item canvas {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    /* ── LOADING / PROGRESS ── */
+    #progress-bar {
+      position: fixed;
+      top: 52px; left: 0;
+      height: 3px;
+      background: var(--accent);
+      width: 0%;
+      z-index: 200;
+      transition: width 0.2s, opacity 0.4s;
+    }
+
+    #loading-overlay {
+      position: fixed;
+      top: 52px; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      z-index: 150;
+      background: var(--canvas-bg);
+    }
+    #loading-overlay.hidden { display: none; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--toolbar-border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading-text { color: var(--toolbar-icon); font-size: 14px; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--toast-bg);
+      color: var(--toolbar-text);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      border: 1px solid var(--toolbar-border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      z-index: 300;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ── SCROLLBAR ── */
+    #viewer-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+    #viewer-wrap::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+    #viewer-wrap::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+    #viewer-wrap::-webkit-scrollbar-thumb:hover { background: var(--thumb-hover); }
+    #sidebar::-webkit-scrollbar { width: 5px; }
+    #sidebar::-webkit-scrollbar-track { background: transparent; }
+    #sidebar::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+    /* ── FILE DROP ── */
+    #drop-zone {
+      position: fixed;
+      inset: 0;
+      background: rgba(137,180,250,0.12);
+      border: 3px dashed var(--accent);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--accent);
+      backdrop-filter: blur(4px);
+    }
+    #drop-zone.active { display: flex; }
+
+    /* ── TOOLTIP ── */
+    [data-tip] { position: relative; }
+    [data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #11111b;
+      color: #cdd6f4;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 999;
+      border: 1px solid var(--toolbar-border);
+    }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      #pdf-title { display: none; }
+      #zoom-select { min-width: 72px; }
+      #sidebar { width: 140px; }
+      #viewer-wrap.sidebar-open { left: 140px; }
+    }
+  </style>
 </head>
 <body>
-    <div id="loading">Loading PDF...</div>
-    <div id="pdf-container"></div>
 
-    <script>
-        // Set up the worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <!-- Sidebar toggle -->
+  <div class="tb-group">
+    <button class="tb-btn" id="btn-sidebar" data-tip="Thumbnails" onclick="toggleSidebar()">
+      <svg viewBox="0 0 24 24"><path d="M3 3h7v18H3zm9 0h9v18h-9z" fill-rule="evenodd" clip-rule="evenodd" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
 
-        const urlParams = new URLSearchParams(window.location.search);
-        let fileUrl = urlParams.get('file');
-        
-        if (!fileUrl) {
-            fileUrl = '{{ "/assets/materials/pcd/rendered/2notes.pdf" | relative_url }}';
-        }
+  <div class="tb-sep"></div>
 
-        // Handle relative URLs correctly according to Jekyll's baseurl
-        const baseurl = '{{ site.baseurl }}';
-        if (fileUrl.startsWith('/assets')) {
-            fileUrl = baseurl.replace(/\/$/, '') + fileUrl;
-        }
+  <!-- File open -->
+  <div class="tb-group">
+    <button class="tb-btn" data-tip="Open file" onclick="document.getElementById('file-input').click()">
+      <svg viewBox="0 0 24 24"><path d="M4 4h5l2 2h9a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>
+    </button>
+    <input type="file" id="file-input" accept=".pdf" style="display:none" onchange="openLocalFile(event)">
+  </div>
 
-        document.title = fileUrl.split('/').pop() + " - PDF Viewer";
+  <div class="tb-sep"></div>
 
-        const container = document.getElementById('pdf-container');
-        const loading = document.getElementById('loading');
+  <!-- Navigation -->
+  <div class="tb-group">
+    <button class="tb-btn" data-tip="First page" onclick="goToPage(1)">
+      <svg viewBox="0 0 24 24"><path d="M6 6v12M18 6l-8 6 8 6V6z"/></svg>
+    </button>
+    <button class="tb-btn" data-tip="Previous page" onclick="changePage(-1)">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="page-nav">
+      <input type="number" id="page-input" min="1" value="1" onchange="goToPage(parseInt(this.value))" onkeydown="if(event.key==='Enter')goToPage(parseInt(this.value))">
+      <span>/</span>
+      <span id="page-total">–</span>
+    </div>
+    <button class="tb-btn" data-tip="Next page" onclick="changePage(1)">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="tb-btn" data-tip="Last page" onclick="goToPage(totalPages)">
+      <svg viewBox="0 0 24 24"><path d="M18 6v12M6 6l8 6-8 6V6z"/></svg>
+    </button>
+  </div>
 
-        async function renderPDF(url) {
-            try {
-                const loadingTask = pdfjsLib.getDocument(url);
-                const pdf = await loadingTask.promise;
-                
-                loading.style.display = 'none';
+  <div class="tb-sep"></div>
 
-                // Use scale 1.5 to make it crisp on mobile and retina displays
-                // The CSS 'width: 100%' handles adjusting it down visually
-                const scale = 1.5;
+  <!-- Zoom -->
+  <div class="tb-group">
+    <button class="tb-btn" data-tip="Zoom out" onclick="adjustZoom(-0.25)">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 11h6M21 21l-4-4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <select id="zoom-select" onchange="setZoomFromSelect(this.value)">
+      <option value="auto">Auto fit</option>
+      <option value="width">Page width</option>
+      <option value="0.5">50%</option>
+      <option value="0.75">75%</option>
+      <option value="1.0" selected>100%</option>
+      <option value="1.25">125%</option>
+      <option value="1.5">150%</option>
+      <option value="2.0">200%</option>
+      <option value="3.0">300%</option>
+    </select>
+    <button class="tb-btn" data-tip="Zoom in" onclick="adjustZoom(0.25)">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 11h6M11 8v6M21 21l-4-4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>
+    </button>
+  </div>
 
-                // Sequentially render each page as a new canvas block (Continuous Scroll)
-                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                    const page = await pdf.getPage(pageNum);
-                    const viewport = page.getViewport({ scale: scale });
+  <div class="tb-sep"></div>
 
-                    const pageWrapper = document.createElement('div');
-                    pageWrapper.className = 'page-container';
-                    
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    
-                    // We only render one page at a time smoothly 
-                    // before appending the next to avoid stutter.
-                    pageWrapper.appendChild(canvas);
-                    container.appendChild(pageWrapper);
+  <!-- Rotation -->
+  <div class="tb-group">
+    <button class="tb-btn" data-tip="Rotate left" onclick="rotatePages(-90)">
+      <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 8-8V2L6 6l6 4V8a6 6 0 1 0 6 6h-2a4 4 0 1 1-4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    </button>
+    <button class="tb-btn" data-tip="Rotate right" onclick="rotatePages(90)">
+      <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8V2l6 4-6 4V8a6 6 0 1 1-6 6H8a4 4 0 1 0 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+    </button>
+  </div>
 
-                    const renderContext = {
-                        canvasContext: ctx,
-                        viewport: viewport
-                    };
-                    
-                    await page.render(renderContext).promise;
-                }
-            } catch (error) {
-                loading.innerText = 'Error loading PDF: ' + error.message;
-                console.error(error);
-            }
-        }
+  <div class="tb-sep"></div>
 
-        renderPDF(fileUrl);
-    </script>
+  <!-- Search -->
+  <div class="tb-group">
+    <button class="tb-btn" id="btn-search" data-tip="Search text (Ctrl+F)" onclick="toggleSearch()">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M21 21l-4-4" stroke="currentColor" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <!-- Dark mode -->
+  <div class="tb-group">
+    <button class="tb-btn" id="btn-dark" data-tip="Dark mode (invert B&W)" onclick="toggleDarkMode()">
+      <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <!-- Presentation mode -->
+  <div class="tb-group">
+    <button class="tb-btn" data-tip="Fullscreen" onclick="toggleFullscreen()">
+      <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="tb-sep"></div>
+
+  <!-- Download -->
+  <div class="tb-group">
+    <button class="tb-btn" data-tip="Download PDF" onclick="downloadPDF()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="tb-spacer"></div>
+
+  <!-- Title -->
+  <span id="pdf-title">No file loaded</span>
+</div>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar"></div>
+
+<!-- SIDEBAR -->
+<div id="sidebar"></div>
+
+<!-- SEARCH BAR -->
+<div id="search-bar">
+  <input type="text" id="search-input" placeholder="Search text…" oninput="searchText(this.value)" onkeydown="searchKeyNav(event)">
+  <span id="search-count">0 / 0</span>
+  <button class="search-btn" onclick="navigateSearch(-1)" data-tip="Previous">
+    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <button class="search-btn" onclick="navigateSearch(1)" data-tip="Next">
+    <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <button class="search-btn" onclick="closeSearch()">
+    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
+<!-- VIEWER -->
+<div id="viewer-wrap">
+  <div id="pdf-container"></div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div id="loading-text">Loading PDF…</div>
+</div>
+
+<!-- DROP ZONE -->
+<div id="drop-zone">⬇ Drop PDF here</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ── STATE ──
+let pdfDoc = null;
+let currentScale = 1.0;
+let rotation = 0;
+let currentPage = 1;
+let totalPages = 0;
+let renderTasks = {};
+let pageElements = {};       // pageNum -> {wrapper, canvas, textDiv}
+let darkMode = false;
+let sidebarOpen = false;
+let searchOpen = false;
+let searchMatches = [];
+let searchIndex = 0;
+let currentPdfUrl = null;
+let currentPdfBytes = null;
+let zoomMode = 'manual'; // 'auto' | 'width' | 'manual'
+let pageVisibilityObserver = null;
+
+// ── INIT ──
+(function init() {
+  // URL param
+  const urlParams = new URLSearchParams(window.location.search);
+  let fileUrl = urlParams.get('file');
+  if (!fileUrl) {
+    // Jekyll fallback
+    const baseurl = (typeof site_baseurl !== 'undefined') ? site_baseurl : '';
+    fileUrl = baseurl + '/assets/materials/pcd/rendered/2notes.pdf';
+  }
+
+  // Restore dark mode preference
+  if (localStorage.getItem('pdfDarkMode') === '1') {
+    darkMode = true;
+    document.body.classList.add('dark-mode');
+    document.getElementById('btn-dark').classList.add('active');
+  }
+
+  // Load
+  loadFromUrl(fileUrl);
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', onKeyDown);
+
+  // Drag & drop
+  document.addEventListener('dragover', e => { e.preventDefault(); document.getElementById('drop-zone').classList.add('active'); });
+  document.addEventListener('dragleave', e => { if (!e.relatedTarget) document.getElementById('drop-zone').classList.remove('active'); });
+  document.addEventListener('drop', e => {
+    e.preventDefault();
+    document.getElementById('drop-zone').classList.remove('active');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') openLocalFileObj(file);
+    else showToast('Please drop a PDF file');
+  });
+
+  // Window resize -> re-render if auto/width mode
+  window.addEventListener('resize', debounce(() => {
+    if (zoomMode !== 'manual') applyAutoZoom();
+  }, 200));
+
+  // Scroll -> update current page indicator
+  document.getElementById('viewer-wrap').addEventListener('scroll', debounce(updateCurrentPageFromScroll, 80));
+})();
+
+// ── LOAD PDF ──
+async function loadFromUrl(url) {
+  currentPdfUrl = url;
+  showLoading('Loading…');
+  setProgress(0);
+  try {
+    const task = pdfjsLib.getDocument({ url, withCredentials: false });
+    task.onProgress = p => { if (p.total) setProgress(Math.round((p.loaded / p.total) * 90)); };
+    pdfDoc = await task.promise;
+    totalPages = pdfDoc.numPages;
+    document.getElementById('page-total').textContent = totalPages;
+    document.getElementById('page-input').max = totalPages;
+    const name = url.split('/').pop().split('?')[0];
+    document.getElementById('pdf-title').textContent = name;
+    document.title = name + ' — PDF Viewer';
+    setProgress(100);
+    await renderAllPages();
+    buildThumbnails();
+    hideLoading();
+  } catch(e) {
+    showLoading('Error: ' + e.message);
+    console.error(e);
+  }
+}
+
+async function loadFromBytes(bytes, name) {
+  currentPdfBytes = bytes;
+  currentPdfUrl = null;
+  showLoading('Parsing…');
+  setProgress(0);
+  try {
+    const task = pdfjsLib.getDocument({ data: bytes });
+    pdfDoc = await task.promise;
+    totalPages = pdfDoc.numPages;
+    document.getElementById('page-total').textContent = totalPages;
+    document.getElementById('page-input').max = totalPages;
+    document.getElementById('pdf-title').textContent = name;
+    document.title = name + ' — PDF Viewer';
+    setProgress(100);
+    await renderAllPages();
+    buildThumbnails();
+    hideLoading();
+  } catch(e) {
+    showLoading('Error: ' + e.message);
+    console.error(e);
+  }
+}
+
+// ── RENDER ALL PAGES ──
+async function renderAllPages() {
+  const container = document.getElementById('pdf-container');
+  container.innerHTML = '';
+  pageElements = {};
+
+  const viewerWrap = document.getElementById('viewer-wrap');
+  const availableWidth = viewerWrap.clientWidth - 32;
+
+  // Compute scale
+  const scale = computeScale(availableWidth);
+  currentScale = scale;
+
+  for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+    const page = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale, rotation });
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'page-wrapper';
+    wrapper.dataset.page = pageNum;
+    wrapper.style.width = viewport.width + 'px';
+
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    canvas.style.width = viewport.width + 'px';
+    canvas.style.height = viewport.height + 'px';
+
+    const textDiv = document.createElement('div');
+    textDiv.className = 'textLayer';
+    textDiv.style.width = viewport.width + 'px';
+    textDiv.style.height = viewport.height + 'px';
+
+    wrapper.appendChild(canvas);
+    wrapper.appendChild(textDiv);
+    container.appendChild(wrapper);
+
+    pageElements[pageNum] = { wrapper, canvas, textDiv, viewport, page };
+
+    // Render canvas
+    const ctx = canvas.getContext('2d');
+    const renderTask = page.render({ canvasContext: ctx, viewport });
+    renderTasks[pageNum] = renderTask;
+    renderTask.promise.then(() => {
+      renderTextLayer(page, viewport, textDiv);
+    }).catch(() => {});
+
+    setProgress(Math.round(90 + (pageNum / totalPages) * 10));
+  }
+
+  setupVisibilityObserver();
+}
+
+function renderTextLayer(page, viewport, textDiv) {
+  textDiv.innerHTML = '';
+  return page.getTextContent().then(textContent => {
+    pdfjsLib.renderTextLayer({
+      textContent,
+      container: textDiv,
+      viewport,
+      textDivs: []
+    });
+  });
+}
+
+// ── ZOOM ──
+function computeScale(availableWidth) {
+  if (!pdfDoc) return 1.0;
+  if (zoomMode === 'width') {
+    // We compute based on first page
+    return availableWidth / getPageBaseWidth(1);
+  } else if (zoomMode === 'auto') {
+    const viewerWrap = document.getElementById('viewer-wrap');
+    const availH = viewerWrap.clientHeight - 40;
+    const baseW = getPageBaseWidth(1);
+    const baseH = getPageBaseHeight(1);
+    const scaleW = availableWidth / baseW;
+    const scaleH = availH / baseH;
+    return Math.min(scaleW, scaleH);
+  }
+  return currentScale;
+}
+
+function getPageBaseWidth(pageNum) {
+  if (pageElements[pageNum]) return pageElements[pageNum].viewport.width / currentScale;
+  return 612; // A4 default
+}
+function getPageBaseHeight(pageNum) {
+  if (pageElements[pageNum]) return pageElements[pageNum].viewport.height / currentScale;
+  return 792;
+}
+
+async function applyAutoZoom() {
+  if (!pdfDoc) return;
+  const viewerWrap = document.getElementById('viewer-wrap');
+  const availableWidth = viewerWrap.clientWidth - 32;
+  const scale = computeScale(availableWidth);
+  currentScale = scale;
+  await reRenderAll();
+}
+
+async function reRenderAll() {
+  if (!pdfDoc) return;
+  const container = document.getElementById('pdf-container');
+  const viewerWrap = document.getElementById('viewer-wrap');
+  const availableWidth = viewerWrap.clientWidth - 32;
+
+  for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+    const el = pageElements[pageNum];
+    if (!el) continue;
+    const page = el.page;
+    const viewport = page.getViewport({ scale: currentScale, rotation });
+    el.viewport = viewport;
+
+    el.wrapper.style.width = viewport.width + 'px';
+    el.canvas.width = viewport.width;
+    el.canvas.height = viewport.height;
+    el.canvas.style.width = viewport.width + 'px';
+    el.canvas.style.height = viewport.height + 'px';
+    el.textDiv.style.width = viewport.width + 'px';
+    el.textDiv.style.height = viewport.height + 'px';
+
+    const ctx = el.canvas.getContext('2d');
+    ctx.clearRect(0, 0, el.canvas.width, el.canvas.height);
+
+    if (renderTasks[pageNum]) { try { renderTasks[pageNum].cancel(); } catch(e){} }
+    const renderTask = page.render({ canvasContext: ctx, viewport });
+    renderTasks[pageNum] = renderTask;
+    renderTask.promise.then(() => {
+      renderTextLayer(page, viewport, el.textDiv);
+    }).catch(() => {});
+  }
+}
+
+function adjustZoom(delta) {
+  zoomMode = 'manual';
+  currentScale = Math.max(0.1, Math.min(5.0, currentScale + delta));
+  syncZoomSelect();
+  reRenderAll();
+}
+
+function setZoomFromSelect(val) {
+  if (val === 'auto' || val === 'width') {
+    zoomMode = val;
+    applyAutoZoom();
+  } else {
+    zoomMode = 'manual';
+    currentScale = parseFloat(val);
+    reRenderAll();
+  }
+}
+
+function syncZoomSelect() {
+  const sel = document.getElementById('zoom-select');
+  const rounded = Math.round(currentScale * 100) / 100;
+  // Try to match an option
+  for (let opt of sel.options) {
+    if (parseFloat(opt.value) === rounded) { sel.value = opt.value; return; }
+  }
+  sel.value = '1.0'; // fallback
+}
+
+// ── ROTATION ──
+async function rotatePages(delta) {
+  rotation = (rotation + delta + 360) % 360;
+  await reRenderAll();
+  showToast('Rotated ' + (delta > 0 ? 'right' : 'left'));
+}
+
+// ── PAGE NAVIGATION ──
+function goToPage(num) {
+  if (!pdfDoc) return;
+  num = Math.max(1, Math.min(totalPages, num || 1));
+  const el = pageElements[num];
+  if (el) {
+    el.wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  setCurrentPage(num);
+}
+
+function changePage(delta) {
+  goToPage(currentPage + delta);
+}
+
+function setCurrentPage(num) {
+  currentPage = num;
+  document.getElementById('page-input').value = num;
+  // Update sidebar active
+  document.querySelectorAll('.thumb-item').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.page) === num);
+  });
+}
+
+function updateCurrentPageFromScroll() {
+  const viewerWrap = document.getElementById('viewer-wrap');
+  const scrollTop = viewerWrap.scrollTop;
+  const centerY = scrollTop + viewerWrap.clientHeight / 3;
+
+  for (let p = 1; p <= totalPages; p++) {
+    const el = pageElements[p];
+    if (!el) continue;
+    const top = el.wrapper.offsetTop;
+    const bottom = top + el.wrapper.offsetHeight;
+    if (centerY >= top && centerY < bottom) {
+      if (p !== currentPage) setCurrentPage(p);
+      break;
+    }
+  }
+}
+
+// ── VISIBILITY OBSERVER ──
+function setupVisibilityObserver() {
+  if (pageVisibilityObserver) pageVisibilityObserver.disconnect();
+  // Just use scroll-based page detection (already done above)
+}
+
+// ── THUMBNAILS ──
+async function buildThumbnails() {
+  const sidebar = document.getElementById('sidebar');
+  sidebar.innerHTML = '';
+  const thumbScale = 0.2;
+
+  for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+    const page = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: thumbScale });
+
+    const item = document.createElement('div');
+    item.className = 'thumb-item' + (pageNum === 1 ? ' active' : '');
+    item.dataset.page = pageNum;
+    item.onclick = () => goToPage(pageNum);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    page.render({ canvasContext: ctx, viewport });
+
+    const label = document.createElement('div');
+    label.className = 'thumb-label';
+    label.textContent = pageNum;
+
+    item.appendChild(canvas);
+    item.appendChild(label);
+    sidebar.appendChild(item);
+  }
+}
+
+// ── SIDEBAR ──
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  const sidebar = document.getElementById('sidebar');
+  const viewerWrap = document.getElementById('viewer-wrap');
+  sidebar.classList.toggle('open', sidebarOpen);
+  viewerWrap.classList.toggle('sidebar-open', sidebarOpen);
+  document.getElementById('btn-sidebar').classList.toggle('active', sidebarOpen);
+}
+
+// ── SEARCH ──
+function toggleSearch() {
+  searchOpen = !searchOpen;
+  const bar = document.getElementById('search-bar');
+  bar.classList.toggle('open', searchOpen);
+  document.getElementById('btn-search').classList.add('active', searchOpen);
+  if (searchOpen) {
+    document.getElementById('search-input').focus();
+  } else {
+    clearSearchHighlights();
+  }
+}
+
+function closeSearch() {
+  searchOpen = false;
+  document.getElementById('search-bar').classList.remove('open');
+  document.getElementById('btn-search').classList.remove('active');
+  clearSearchHighlights();
+}
+
+function clearSearchHighlights() {
+  document.querySelectorAll('.textLayer .highlight').forEach(el => {
+    el.classList.remove('highlight', 'selected');
+  });
+  searchMatches = [];
+  searchIndex = 0;
+  document.getElementById('search-count').textContent = '0 / 0';
+}
+
+function searchText(query) {
+  clearSearchHighlights();
+  if (!query.trim()) return;
+
+  const allSpans = document.querySelectorAll('.textLayer span');
+  const q = query.toLowerCase();
+  const matches = [];
+
+  allSpans.forEach(span => {
+    if (span.textContent.toLowerCase().includes(q)) {
+      span.classList.add('highlight');
+      matches.push(span);
+    }
+  });
+
+  searchMatches = matches;
+  searchIndex = 0;
+  updateSearchCount();
+  if (matches.length > 0) highlightCurrent();
+}
+
+function navigateSearch(dir) {
+  if (!searchMatches.length) return;
+  searchIndex = (searchIndex + dir + searchMatches.length) % searchMatches.length;
+  highlightCurrent();
+}
+
+function searchKeyNav(e) {
+  if (e.key === 'Enter') navigateSearch(e.shiftKey ? -1 : 1);
+  if (e.key === 'Escape') closeSearch();
+}
+
+function highlightCurrent() {
+  searchMatches.forEach((el, i) => el.classList.toggle('selected', i === searchIndex));
+  if (searchMatches[searchIndex]) {
+    searchMatches[searchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  updateSearchCount();
+}
+
+function updateSearchCount() {
+  const total = searchMatches.length;
+  document.getElementById('search-count').textContent =
+    total === 0 ? '0 / 0' : (searchIndex + 1) + ' / ' + total;
+}
+
+// ── DARK MODE ──
+function toggleDarkMode() {
+  darkMode = !darkMode;
+  document.body.classList.toggle('dark-mode', darkMode);
+  document.getElementById('btn-dark').classList.toggle('active', darkMode);
+  localStorage.setItem('pdfDarkMode', darkMode ? '1' : '0');
+  showToast(darkMode ? 'Dark mode on — B&W inverted' : 'Dark mode off');
+}
+
+// ── FULLSCREEN ──
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// ── DOWNLOAD ──
+function downloadPDF() {
+  if (!pdfDoc) { showToast('No PDF loaded'); return; }
+  const name = document.getElementById('pdf-title').textContent || 'document.pdf';
+  if (currentPdfBytes) {
+    const blob = new Blob([currentPdfBytes], { type: 'application/pdf' });
+    triggerDownload(URL.createObjectURL(blob), name);
+  } else if (currentPdfUrl) {
+    triggerDownload(currentPdfUrl, name);
+  }
+}
+
+function triggerDownload(href, name) {
+  const a = document.createElement('a');
+  a.href = href;
+  a.download = name;
+  a.click();
+}
+
+// ── LOCAL FILE ──
+function openLocalFile(e) {
+  const file = e.target.files[0];
+  if (file) openLocalFileObj(file);
+}
+
+function openLocalFileObj(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    loadFromBytes(new Uint8Array(e.target.result), file.name);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ── KEYBOARD SHORTCUTS ──
+function onKeyDown(e) {
+  const tag = document.activeElement.tagName;
+  if (tag === 'INPUT' || tag === 'SELECT') return;
+
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); toggleSearch(); return; }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') changePage(1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') changePage(-1);
+  if (e.key === 'Home') goToPage(1);
+  if (e.key === 'End') goToPage(totalPages);
+  if (e.key === '+' || e.key === '=') adjustZoom(0.1);
+  if (e.key === '-') adjustZoom(-0.1);
+  if (e.key === 'Escape') closeSearch();
+}
+
+// ── PROGRESS BAR ──
+let progressTimeout;
+function setProgress(pct) {
+  const bar = document.getElementById('progress-bar');
+  bar.style.width = pct + '%';
+  bar.style.opacity = '1';
+  if (pct >= 100) {
+    clearTimeout(progressTimeout);
+    progressTimeout = setTimeout(() => { bar.style.opacity = '0'; }, 600);
+  }
+}
+
+// ── LOADING OVERLAY ──
+function showLoading(msg) {
+  const overlay = document.getElementById('loading-overlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('loading-text').textContent = msg;
+}
+function hideLoading() {
+  document.getElementById('loading-overlay').classList.add('hidden');
+}
+
+// ── TOAST ──
+let toastTimeout;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ── UTILS ──
+function debounce(fn, delay) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
+}
+</script>
 </body>
 </html>
