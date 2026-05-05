@@ -667,14 +667,15 @@ async function renderAllPages() {
 
   const viewerWrap = document.getElementById('viewer-wrap');
   const availableWidth = viewerWrap.clientWidth - 32;
-
-  // Compute scale
   const scale = computeScale(availableWidth);
   currentScale = scale;
 
+  // Ambil rasio layar (biasanya 2x atau 3x untuk layar tajam)
+  const dpr = window.devicePixelRatio || 1;
+
   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
     const page = await pdfDoc.getPage(pageNum);
-    const viewport = page.getViewport({ scale, rotation });
+    const viewport = page.getViewport({ scale: currentScale, rotation });
 
     const wrapper = document.createElement('div');
     wrapper.className = 'page-wrapper';
@@ -682,8 +683,11 @@ async function renderAllPages() {
     wrapper.style.width = viewport.width + 'px';
 
     const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
+    // Resolusi internal canvas diperbesar sesuai DPR
+    canvas.width = Math.floor(viewport.width * dpr);
+    canvas.height = Math.floor(viewport.height * dpr);
+    
+    // Ukuran tampilan CSS tetap sesuai viewport
     canvas.style.width = viewport.width + 'px';
     canvas.style.height = viewport.height + 'px';
 
@@ -698,18 +702,20 @@ async function renderAllPages() {
 
     pageElements[pageNum] = { wrapper, canvas, textDiv, viewport, page };
 
-    // Render canvas
     const ctx = canvas.getContext('2d');
-    const renderTask = page.render({ canvasContext: ctx, viewport });
+    
+    // Beritahu pdf.js untuk merender dengan skala DPR
+    const renderTask = page.render({ 
+      canvasContext: ctx, 
+      viewport: viewport,
+      transform: [dpr, 0, 0, dpr, 0, 0] // Kunci ketajaman
+    });
+    
     renderTasks[pageNum] = renderTask;
     renderTask.promise.then(() => {
       renderTextLayer(page, viewport, textDiv);
     }).catch(() => {});
-
-    setProgress(Math.round(90 + (pageNum / totalPages) * 10));
   }
-
-  setupVisibilityObserver();
 }
 
 function renderTextLayer(page, viewport, textDiv) {
@@ -762,33 +768,39 @@ async function applyAutoZoom() {
 
 async function reRenderAll() {
   if (!pdfDoc) return;
-  const container = document.getElementById('pdf-container');
-  const viewerWrap = document.getElementById('viewer-wrap');
-  const availableWidth = viewerWrap.clientWidth - 32;
+  const dpr = window.devicePixelRatio || 1;
 
   for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
     const el = pageElements[pageNum];
     if (!el) continue;
-    const page = el.page;
-    const viewport = page.getViewport({ scale: currentScale, rotation });
+    
+    const viewport = el.page.getViewport({ scale: currentScale, rotation });
     el.viewport = viewport;
 
     el.wrapper.style.width = viewport.width + 'px';
-    el.canvas.width = viewport.width;
-    el.canvas.height = viewport.height;
+    
+    // Update resolusi tinggi
+    el.canvas.width = Math.floor(viewport.width * dpr);
+    el.canvas.height = Math.floor(viewport.height * dpr);
+    
+    // Update ukuran tampilan
     el.canvas.style.width = viewport.width + 'px';
     el.canvas.style.height = viewport.height + 'px';
     el.textDiv.style.width = viewport.width + 'px';
     el.textDiv.style.height = viewport.height + 'px';
 
     const ctx = el.canvas.getContext('2d');
-    ctx.clearRect(0, 0, el.canvas.width, el.canvas.height);
-
     if (renderTasks[pageNum]) { try { renderTasks[pageNum].cancel(); } catch(e){} }
-    const renderTask = page.render({ canvasContext: ctx, viewport });
+    
+    const renderTask = el.page.render({ 
+      canvasContext: ctx, 
+      viewport: viewport,
+      transform: [dpr, 0, 0, dpr, 0, 0] 
+    });
+    
     renderTasks[pageNum] = renderTask;
     renderTask.promise.then(() => {
-      renderTextLayer(page, viewport, el.textDiv);
+      renderTextLayer(el.page, viewport, el.textDiv);
     }).catch(() => {});
   }
 }
