@@ -1,0 +1,32 @@
+\contentsline {section}{\numberline {1}Pendahuluan}{3}{section.1}%
+\contentsline {section}{\numberline {2}Fondasi Matematika: Transformasi Intensitas (Bagian 3.1 \& 3.2)}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Intuisi Dasar}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Jenis-Jenis Transformasi Dasar}{3}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Citra Negatif}{3}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Transformasi Log}{4}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Transformasi Power-Law (Gamma Correction)}{4}{subsubsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.3}Contoh Kode: Transformasi Intensitas dengan Python}{5}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Pemrosesan Histogram (Bagian 3.3)}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Apa Itu Histogram Citra?}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Histogram Equalization (HE)}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Histogram Matching (Spesifikasi Histogram)}{7}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Contoh Kode: Histogram Equalization}{7}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Dasar Penyaringan Spasial (Bagian 3.4)}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Mekanisme: Neighborhood Processing}{10}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Korelasi vs.\ Konvolusi}{10}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Padding: Menangani Tepi Citra}{10}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Contoh Kode: Konvolusi 2D Manual}{10}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Penyaringan Smoothing / Lowpass (Bagian 3.5)}{11}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Tujuan}{11}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Box Filter (Average Filter)}{12}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Gaussian Filter}{12}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Median Filter (Non-Linear)}{13}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Contoh Kode: Perbandingan Filter Smoothing}{13}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Penyaringan Sharpening / Highpass (Bagian 3.6)}{14}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Prinsip Dasar: Penajaman sebagai Diferensiasi}{14}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Laplacian: Turunan Orde Kedua}{14}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Gradient: Turunan Orde Pertama}{14}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Unsharp Masking}{15}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Contoh Kode: Sharpening dengan Laplacian dan Unsharp Masking}{16}{subsection.6.5}%
+\contentsline {section}{\numberline {7}Ringkasan Perbandingan Filter}{17}{section.7}%
+\contentsline {section}{\numberline {8}Mini-Latihan (Active Learning)}{17}{section.8}%
