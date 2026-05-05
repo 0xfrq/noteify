@@ -1,0 +1,167 @@
+<!-- pdf-viewer.html include -->
+<style>
+  .pdf-viewer-wrapper {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .pdf-viewer-container {
+    width: 100%;
+    height: 600px;
+    position: relative;
+    overflow: auto;
+    background-color: #525659;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .pdf-render {
+    display: block;
+    margin: 10px auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  }
+  .pdf-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+  }
+  .pdf-controls button {
+    padding: 4px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  .pdf-controls button:hover {
+    background: #f0f0f0;
+  }
+  .file-name {
+    font-size: 14px;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+</style>
+
+<div class="pdf-viewer-wrapper" id="pdf-wrapper-{{ include.id }}">
+  <div class="pdf-controls">
+    <button class="prev-page">Previous</button>
+    <span class="page-indicator">Page: <span class="page-num"></span> / <span class="page-count"></span></span>
+    <button class="next-page">Next</button>
+    <button class="zoom-out">Zoom Out</button>
+    <button class="zoom-in">Zoom In</button>
+    <button class="fullscreen-btn">Fullscreen</button>
+    <a href="{{ include.file | relative_url }}" target="_blank" class="download-link" title="Open PDF">📄 Full PDF</a>
+  </div>
+
+  <div class="pdf-viewer-container">
+    <canvas class="pdf-render"></canvas>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  (function() {
+    // Only set workerSrc once
+    if (!window.pdfjsLib) return;
+    if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+       window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    const wrapperId = "pdf-wrapper-{{ include.id }}";
+    const wrapper = document.getElementById(wrapperId);
+    if (!wrapper) return;
+
+    let pdfDoc = null,
+        pageNum = 1,
+        pageIsRendering = false,
+        pageNumIsPending = null,
+        scale = 1.25,
+        canvas = wrapper.querySelector('.pdf-render'),
+        ctx = canvas.getContext('2d'),
+        container = wrapper.querySelector('.pdf-viewer-container');
+
+    const fileUrl = "{{ include.file | relative_url }}";
+
+    const renderPage = num => {
+      pageIsRendering = true;
+      pdfDoc.getPage(num).then(page => {
+        const viewport = page.getViewport({ scale: scale });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderCtx = { canvasContext: ctx, viewport: viewport };
+        page.render(renderCtx).promise.then(() => {
+          pageIsRendering = false;
+          if (pageNumIsPending !== null) {
+            renderPage(pageNumIsPending);
+            pageNumIsPending = null;
+          }
+        });
+        wrapper.querySelector('.page-num').textContent = num;
+      });
+    };
+
+    const queueRenderPage = num => {
+      if (pageIsRendering) {
+        pageNumIsPending = num;
+      } else {
+        renderPage(num);
+      }
+    };
+
+    const showPrevPage = () => {
+      if (pageNum <= 1) return;
+      pageNum--;
+      queueRenderPage(pageNum);
+    };
+
+    const showNextPage = () => {
+      if (pageNum >= pdfDoc.numPages) return;
+      pageNum++;
+      queueRenderPage(pageNum);
+    };
+
+    wrapper.querySelector('.prev-page').addEventListener('click', showPrevPage);
+    wrapper.querySelector('.next-page').addEventListener('click', showNextPage);
+    
+    wrapper.querySelector('.zoom-in').addEventListener('click', () => {
+      scale += 0.25;
+      queueRenderPage(pageNum);
+    });
+    
+    wrapper.querySelector('.zoom-out').addEventListener('click', () => {
+      if(scale <= 0.5) return;
+      scale -= 0.25;
+      queueRenderPage(pageNum);
+    });
+
+    wrapper.querySelector('.fullscreen-btn').addEventListener('click', () => {
+      if (container.requestFullscreen) {
+        container.requestFullscreen();
+      } else if (container.mozRequestFullScreen) { /* Firefox */
+        container.mozRequestFullScreen();
+      } else if (container.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+        container.webkitRequestFullscreen();
+      } else if (container.msRequestFullscreen) { /* IE/Edge */
+        container.msRequestFullscreen();
+      }
+    });
+
+    pdfjsLib.getDocument(fileUrl).promise.then(pdfDoc_ => {
+      pdfDoc = pdfDoc_;
+      wrapper.querySelector('.page-count').textContent = pdfDoc.numPages;
+      renderPage(pageNum);
+    }).catch(err => {
+      const errDiv = document.createElement('div');
+      errDiv.style.color = "red";
+      errDiv.style.padding = "20px";
+      errDiv.textContent = 'Error loading PDF: ' + err.message;
+      container.appendChild(errDiv);
+    });
+  })();
+</script>

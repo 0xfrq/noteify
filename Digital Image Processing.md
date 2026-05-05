@@ -5,7 +5,7 @@ layout: page
 
 | No | About | Materials | Flashcard | Chall | Attachment |
 |-----|------|-----------|------------|------------|------------|
-| 2 | Materi ini membahas proses pembentukan citra mulai dari aspek fisik cahaya hingga representasi digitalnya | <small>[[bab 2 - notes.pdf]]({{ '/assets/materials/pcd/rendered/2notes.pdf' | relative_url }})</small> | <small>[soon](#)</small> | <small>[soon](#)</small> | <small>[soon](#)</small> | 
+| 2 | Materi ini membahas proses pembentukan citra mulai dari aspek fisik cahaya hingga representasi digitalnya | <small>[[bab 2 - notes.pdf]]({{ '/viewer.html?file=' | append: '/assets/materials/pcd/rendered/2notes.pdf' | relative_url }})</small> | <small>[soon](#)</small> | <small>[soon](#)</small> | <small>[soon](#)</small> | 
 | 1 | Wed Apr 28 | TBA | TBA | TBA | - |
 | 1 | Thu Apr 29 | TBA | TBA | TBA | - |
 | 2 | Tue May 04 | TBA | TBA | TBA | - |
