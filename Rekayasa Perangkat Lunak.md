@@ -1,0 +1,11 @@
+---
+title: Rekayasa Perangkat Lunak
+layout: page
+---
+
+| About | Materials | Notes |
+|------|-----------|------------|
+| 1. Konsep Dasar RPL | ([[1. Konsep Dasar  RPL.pdf]]({{ '/assets/materials/swe/slides/1.%20Konsep%20Dasar%20%20RPL.pdf' | relative_url }}),<small>[[pdfd]]({{ '/viewer.html?file=' | append: '/noteify/assets/materials/swe/slides/1.%20Konsep%20Dasar%20%20RPL.pdf' | relative_url }})</small>) | ([[1. intro.pdf]]({{ '/assets/materials/swe/rendered/1.%20intro.pdf' | relative_url }}),<small>[[pdfd]]({{ '/viewer.html?file=' | append: '/noteify/assets/materials/swe/rendered/1.%20intro.pdf' | relative_url }})</small>) |
+| 2. Model Proses PL | ([[3. Model Proses PL.pdf]]({{ '/assets/materials/swe/slides/3.%20Model%20Proses%20PL.pdf' | relative_url }}),<small>[[pdfd]]({{ '/viewer.html?file=' | append: '/noteify/assets/materials/swe/slides/3.%20Model%20Proses%20PL.pdf' | relative_url }})</small>) | ([[2. model proses pl.pdf]]({{ '/assets/materials/swe/rendered/2.%20model%20proses%20pl.pdf' | relative_url }}),<small>[[pdfd]]({{ '/viewer.html?file=' | append: '/noteify/assets/materials/swe/rendered/2.%20model%20proses%20pl.pdf' | relative_url }})</small>) |
+| 3. Analisis Kebutuhan Pengguna | ([[4. Analisis Kebutuhan Pengguna.pdf]]({{ '/assets/materials/swe/slides/4.%20Analisis%20Kebutuhan%20Pengguna.pdf' | relative_url }}),<small>[[pdfd]]({{ '/viewer.html?file=' | append: '/noteify/assets/materials/swe/slides/4.%20Analisis%20Kebutuhan%20Pengguna.pdf' | relative_url }})</small>) | ([[4. Analisis kebutuhan pengguna.pdf]]({{ '/assets/materials/swe/rendered/4.%20Analisis%20kebutuhan%20pengguna.pdf' | relative_url }}),<small>[[pdfd]]({{ '/viewer.html?file=' | append: '/noteify/assets/materials/swe/rendered/4.%20Analisis%20kebutuhan%20pengguna.pdf' | relative_url }})</small>) |
+| 4. Pemodelan PL | ([[5. Pemodelan PL.pdf]]({{ '/assets/materials/swe/slides/5.%20Pemodelan%20PL.pdf' | relative_url }}),<small>[[pdfd]]({{ '/viewer.html?file=' | append: '/noteify/assets/materials/swe/slides/5.%20Pemodelan%20PL.pdf' | relative_url }})</small>) | ([[5. pemodelan pl.pdf]]({{ '/assets/materials/swe/rendered/5.%20pemodelan%20pl.pdf' | relative_url }}),<small>[[pdfd]]({{ '/viewer.html?file=' | append: '/noteify/assets/materials/swe/rendered/5.%20pemodelan%20pl.pdf' | relative_url }})</small>) |

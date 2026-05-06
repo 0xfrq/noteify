@@ -1,0 +1,11 @@
+\contentsline {section}{\numberline {1}Pemahaman Rekayasa Kebutuhan}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Apa itu Rekayasa Kebutuhan?}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Kenapa Kita Butuh Rekayasa Kebutuhan?}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Metode Penggalian Kebutuhan}{3}{section.2}%
+\contentsline {section}{\numberline {3}Klasifikasi Tingkatan Kebutuhan}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}1. User Requirement (Kebutuhan Pengguna)}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}2. System Requirement (Kebutuhan Sistem)}{4}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Kebutuhan Fungsional vs Non-Fungsional}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Kebutuhan Fungsional (Functional Requirement)}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Kebutuhan Non-Fungsional (Non-Functional Requirement)}{5}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Klasifikasi Mendalam Kebutuhan Non-Fungsional}{6}{section.5}%
