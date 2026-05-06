@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}Mengenal Epsilon NFA ($\epsilon $-NFA)}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Apa Itu Transisi Epsilon?}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Kenapa Kita Butuh $\epsilon $-NFA?}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Definisi Formal dan $\epsilon $-Closure}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Tupel Matematis $\epsilon $-NFA}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Kunci Utama: $\epsilon $-Closure}{3}{subsection.2.2}%
+\contentsline {section}{\numberline {3}Kumpulan Studi Kasus Perancangan $\epsilon $-NFA}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Kasus 1: Pilihan Paralel (Kondisi ATAU)}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Kasus 2: Elemen Opsional (Boleh Ada, Boleh Nggak)}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Kasus 3: Perulangan Penuh (Kleene Star)}{5}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Kasus 4: Penggabungan Dua Mesin (Concatenation)}{5}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Cara Mengeksekusi / Tracing String pada $\epsilon $-NFA}{6}{section.4}%
