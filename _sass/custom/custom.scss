@@ -112,6 +112,28 @@ html[data-theme="dark"] table tbody tr:nth-child(even) th {
   background: var(--dm-surface-2);
 }
 
+html[data-theme="dark"] .main-content table,
+html[data-theme="dark"] .main-content table th,
+html[data-theme="dark"] .main-content table td {
+  background: var(--dm-surface) !important;
+  color: var(--dm-text) !important;
+  border-color: var(--dm-border) !important;
+}
+
+html[data-theme="dark"] .main-content table thead th {
+  background: var(--dm-surface-2) !important;
+}
+
+html[data-theme="dark"] .main-content table tbody tr:nth-child(even) td,
+html[data-theme="dark"] .main-content table tbody tr:nth-child(even) th {
+  background: var(--dm-surface-2) !important;
+}
+
+html[data-theme="dark"] .table-wrapper,
+html[data-theme="dark"] .table-wrapper table {
+  background: var(--dm-surface) !important;
+}
+
 html[data-theme="dark"] hr {
   border-color: var(--dm-border);
 }

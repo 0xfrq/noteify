@@ -15,7 +15,7 @@
 \usepackage{mdframed}
 \usepackage{fancyhdr}
 \usepackage{titlesec}
-\usepackage{tikz} % Ditambahkan untuk menggambar figure Automata
+\usepackage{tikz} % Untuk menggambar diagram state DFA
 \usetikzlibrary{automata, positioning, arrows.meta}
 
 % Font Settings
@@ -79,7 +79,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textit{Teori Bahasa dan Automata}}
-\fancyhead[R]{\small\textit{noteify -- Modul Deterministic Finite Automata}}
+\fancyhead[R]{\small\textit{Modul Pembelajaran -- DFA}}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -87,7 +87,7 @@
 \title{
   {\LARGE\bfseries TEORI BAHASA DAN AUTOMATA}\\[0.5em]
   {\large Modul Pembelajaran: Deterministic Finite Automata (DFA)}\\[0.8em]
-  {\normalsize Modul komprehensif mengenai konsep dasar, definisi formal, struktur loop, dan contoh perancangan DFA.}
+  {\normalsize Penjelasan mendalam mengenai konsep dasar, cara kerja, struktur loop transisi, perhitungan matematis, serta studi kasus perancangan mesin DFA.}
 }
 \author{}
 \date{}
@@ -102,35 +102,35 @@
 
 % ─── KONTEN MATERI ─────────────────────────────────────────────────────────────
 
-\section{Konsep Dasar Deterministic Finite Automata (DFA)}
+\section{Mengenal Deterministic Finite Automata (DFA)}
 
-\subsection{Pengantar dan Prinsip Kerja DFA}
-\textit{Deterministic Finite Automaton} (DFA) adalah mesin abstrak yang digunakan untuk mengenali pola atau bahasa reguler[cite: 1, 3]. Mesin ini beroperasi dengan membaca sekumpulan karakter (\textit{String}) dari sebuah pita masukan (\textit{Input Tape}) satu per satu dari kiri ke kanan[cite: 1]. Hasil akhir dari pemrosesan ini hanya memiliki dua kemungkinan: mesin menerima (\textit{Accept}) string tersebut, atau menolaknya (\textit{Reject})[cite: 1].
+\subsection{Apa itu Mesin DFA?}
+Bayangin \textit{Deterministic Finite Automaton} (DFA) itu kayak sebuah mesin pemindai otomatis yang tugasnya ngebaca rentetan teks atau karakter. Mesin ini dikasih sebuah pita input (\textit{Input Tape}) yang isinya deretan karakter (kita sebut \textit{string}), dan mesin bakal ngebaca pita itu satu per satu dari arah kiri ke kanan.
 
-Sifat fundamental dari DFA adalah \textbf{Determinisme}[cite: 1]. Artinya, jika mesin berada di suatu \textit{state} dan menerima sebuah simbol input tertentu, maka arah perpindahan \textit{state} selanjutnya sudah dapat dipastikan secara mutlak[cite: 1]. Tidak ada keraguan atau percabangan ganda untuk satu simbol input yang sama[cite: 1]. Misalnya, jika mesin berada di state A dan membaca angka "1", ia hanya memiliki satu jalan, yaitu menuju state B[cite: 1].
+Selesai ngebaca semua teks di pita, mesin ini cuma punya dua pilihan jawaban akhir: teksnya diterima (\textbf{Accept}) atau teksnya ditolak (\textbf{Reject}). Nggak ada jawaban "mungkin" atau "setengah diterima".
 
-\begin{notebox}
-\textbf{Karakteristik Determinisme pada DFA}
+Sifat paling utama dari DFA adalah \textbf{Determinisme}. Maksudnya, kalau mesin lagi ada di suatu \textit{state} (posisi/kedudukan tertentu) dan dia ngebaca sebuah karakter, langkah atau arah jalan mesin selanjutnya udah pasti dan nggak bisa ditawar.
 \begin{itemize}
-    \item \textbf{Kepastian Arah:} Hanya mempunyai tepat satu \textit{state} tujuan untuk setiap kombinasi \textit{state} asal dan input[cite: 1].
-    \item \textbf{Kewajiban Transisi:} Setiap \textit{state} di dalam DFA \textbf{wajib} memiliki transisi keluar untuk setiap simbol yang ada di dalam alfabet (himpunan input)[cite: 1].
+    \item Nggak ada cerita satu input bikin mesin bingung milih dua jalan. Tiap input pasti mengarah ke tepat 1 \textit{state} tujuan.
+    \item Setiap \textit{state} wajib banget punya jalur panah keluar untuk \textbf{semua} simbol yang ada di kamus inputnya.
 \end{itemize}
-\end{notebox}
 
-\subsection{Struktur Diagram Transisi DFA}
-Secara visual, DFA digambarkan menggunakan graf berarah yang disebut diagram transisi. Terdapat lima elemen visual utama dalam diagram ini:
-\begin{enumerate}
-    \item \textbf{Initial State}: Merupakan state awal tempat mesin mulai membaca string, ditandai dengan anak panah yang masuk tanpa state asal[cite: 1].
-    \item \textbf{State}: Merepresentasikan kedudukan atau memori mesin pada suatu waktu, digambarkan dengan lingkaran[cite: 1].
-    \item \textbf{Transition}: Arah perpindahan antar state, digambarkan dengan garis berpanah[cite: 1].
-    \item \textbf{Input}: Simbol yang dituliskan di atas garis transisi, bertindak sebagai pemicu perpindahan state[cite: 1].
-    \item \textbf{Final State}: Kedudukan akhir penerimaan, digambarkan dengan lingkaran ganda (\textit{double circle})[cite: 1]. Sebuah DFA dapat memiliki lebih dari satu \textit{final state} (\textit{multi final state})[cite: 1].
-\end{enumerate}
+\subsection{Anatomi Diagram Transisi DFA}
+Biar lebih gampang dimengerti, alur kerja DFA biasanya digambar pakai diagram. Di dalam diagram ini ada beberapa bagian penting:
+\begin{itemize}
+    \item \textbf{Initial State}: Titik mulai (\textit{start}) jalannya mesin. Biasanya ditandai pakai panah yang masuk tanpa ada asal usul statenya.
+    \item \textbf{State}: Posisi atau memori mesin pada saat itu, digambar pakai lingkaran biasa.
+    \item \textbf{Transition}: Garis panah yang nunjukin perpindahan dari satu \textit{state} ke \textit{state} lain.
+    \item \textbf{Input}: Karakter (angka/huruf) yang ditulis di atas garis transisi. Ini yang jadi pemicu mesin buat pindah.
+    \item \textbf{Final State}: \textit{State} penentu akhir yang digambar pakai lingkaran ganda (\textit{double circle}). Mesin DFA boleh banget punya lebih dari satu \textit{final state} di dalam satu diagram.
+\end{itemize}
+
+Nah, syarat \textit{string} dibilang \textbf{diterima} itu lumayan ketat. Mesin harus udah selesai baca \textbf{semua} karakter sampai ujung pita, dan pas karakter terakhir dibaca, posisi mesin harus berhenti pas di salah satu \textit{Final State}. Kalau berhentinya di state biasa, ya berarti string-nya \textbf{ditolak}.
 
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}[shorten >=1pt,node distance=3cm,on grid,auto, thick]
-       \node[state,initial,initial text=] (A) {$A$};
+       \node[state,initial,initial text=Start] (A) {$A$};
        \node[state] (B) [right=of A] {$B$};
        \node[state] (C) [below=of A] {$C$};
        \node[state,accepting] (D) [right=of C] {$D$};
@@ -145,94 +145,119 @@ Secara visual, DFA digambarkan menggunakan graf berarah yang disebut diagram tra
        (D) edge [bend left] node {1} (C)
            edge [bend right] node [swap] {0} (B);
     \end{tikzpicture}
-    \caption{Contoh Struktur Diagram Transisi DFA}
+    \caption{Ilustrasi Struktur Diagram Transisi DFA. Lingkaran ganda $D$ adalah Final State.}
 \end{figure}
 
-\subsection{Syarat Diterima dan Ditolaknya String}
-Proses membaca input disebut \textit{scanning}. Head mesin akan membaca satu per satu karakter hingga pita kosong (\textit{empty tape} atau \textit{input finished})[cite: 1].
+\newpage
+\section{Loop Transisi dan Dead State}
+
+\subsection{Kenapa Harus Ada Loop Transisi?}
+Pas bikin DFA, kita bakal sering banget bikin panah transisi yang muter balik ke \textit{state} itu sendiri. Ini yang disebut dengan \textbf{Loop}. Artinya, mesin baca karakter baru, tapi posisinya nggak pindah ke state lain. Secara matematis ditulis $\delta(q_i, a) = q_i$.
+
+Loop punya tiga peran krusial di DFA:
+\begin{enumerate}
+    \item \textbf{Menjaga Kondisi Logika:} Misal kita disuruh nyari pola "minimal ada angka 1". Kalau angka 1 udah ketemu, kita nggak mau mesinnya ngelupain fakta itu kalau dikasih angka 0 lagi. Loop ngebantu mesin buat tetep "inget" dan stabil di kondisi tersebut.
+    \item \textbf{Bikin Desain Efisien:} Daripada bikin state baru yang fungsinya sama aja, mending pakai loop. Contoh, buat ngecek jumlah angka 0 itu genap atau ganjil, angka "1" kan nggak ngerubah hitungan genap-ganjilnya angka 0. Jadi tiap ketemu "1", kita loop aja di state yang sama.
+    \item \textbf{Syarat Determinisme:} Balik lagi ke aturan awal, setiap state \textbf{harus} punya transisi buat semua simbol. Kalau ada simbol yang nggak bikin pindah logika, ya kasih loop aja biar syaratnya terpenuhi dan mesin nggak \textit{error} (ngehang).
+\end{enumerate}
+
+\subsection{Trap State (Dead State)}
+Ada satu tipe \textit{state} yang unik banget, namanya \textbf{Trap State} atau \textbf{Dead State}. Ini adalah state "lubang hitam" yang isinya cuma loop untuk semua simbol yang ada.
 \begin{itemize}
-    \item \textbf{Diterima (Accept):} String diterima jika dan hanya jika semua input string telah selesai diperiksa dan mesin berhenti tepat pada salah satu \textit{final state}[cite: 1].
-    \item \textbf{Ditolak (Reject):} String ditolak jika setelah semua input habis dibaca, mesin berhenti di state yang \textbf{bukan} merupakan \textit{final state}[cite: 1].
+    \item Kalau di rumus ditulis: $\delta(q_t, 0) = q_t$ dan $\delta(q_t, 1) = q_t$.
+    \item Begitu mesin masuk ke state ini, dia terperangkap dan nggak bakal bisa keluar lagi ke state mana pun.
+    \item Gunanya murni cuma buat "menyerap" semua sisa karakter di pita kalau mesin udah tahu dari awal string-nya pasti bakal ditolak.
+    \item Karena \textit{trap state} itu \textbf{bukan} \textit{final state}, string apa pun yang lewat ke sini dipastikan 100\% \textbf{ditolak}.
 \end{itemize}
 
 \newpage
-\section{Definisi Formal DFA}
+\section{Definisi Formal dan Hitungan Matematis}
 
-Untuk menganalisis DFA secara matematis, kita menggunakan model 5-tupel. Secara formal, Deterministic Finite Automaton $M$ didefinisikan sebagai:
-\[ M = (Q, \Sigma, \delta, q_0, F) \][cite: 3]
+Biar nggak cuma nggambar doang, mesin DFA ini di-modelin pakai matematika menjadi lima komponen utama (5-tupel): $M = (Q, \Sigma, \delta, q_0, F)$.
+Penjelasan rincinya begini:
+\begin{itemize}
+    \item \textbf{$Q$ (Himpunan State)}: Ini adalah list semua \textit{state} yang ada di dalam mesin. Misalnya $Q = \{q_0, q_1, q_2, q_3\}$.
+    \item \textbf{$\Sigma$ (Input Alphabet)}: Kamus karakter yang bisa dibaca sama mesin. Ingat, \textit{empty string} ($\epsilon$) nggak boleh masuk ke himpunan ini. Contohnya $\Sigma = \{a, b\}$.
+    \item \textbf{$\delta$ (Fungsi Transisi)}: Rumus aturannya. Dipetakan sebagai $\delta : Q \times \Sigma \rightarrow Q$. Fungsinya buat nentuin: "kalau aku di state ini, dan dapet huruf ini, aku harus lompat ke state mana?".
+    \item \textbf{$q_0$ (State Awal)}: Tempat komputasi dimulai. Wajib hukumnya $q_0$ ada di dalam himpunan $Q$.
+    \item \textbf{$F$ (Himpunan Final State)}: Kumpulan \textit{state} penerima. Karena final state itu ya bagian dari state biasa, maka $F \subseteq Q$.
+\end{itemize}
 
-Berikut adalah penjelasan komprehensif dari setiap komponen tupel tersebut:
-\begin{enumerate}
-    \item \textbf{$Q$ (Himpunan State):} Merupakan himpunan hingga dari semua state atau kedudukan yang ada di dalam mesin[cite: 3].
-    \item \textbf{$\Sigma$ (Input Alphabet):} Himpunan hingga dari simbol-simbol input yang dikenali oleh mesin[cite: 3]. Harap diingat bahwa string kosong (epsilon / $\epsilon$) tidak pernah masuk ke dalam anggota himpunan alfabet ini ($\epsilon \notin \Sigma$)[cite: 3].
-    \item \textbf{$\delta$ (Fungsi Transisi):} Sebuah fungsi yang mendefinisikan perpindahan state, dipetakan sebagai $\delta : Q \times \Sigma \rightarrow Q$[cite: 3]. Artinya, fungsi ini mengambil satu state asal dan satu simbol input, kemudian memetakan (menghasilkan) tepat satu state tujuan[cite: 3].
-    \item \textbf{$q_0$ (State Awal):} State di mana komputasi selalu dimulai. Syarat mutlaknya adalah $q_0 \in Q$[cite: 3].
-    \item \textbf{$F$ (Himpunan Final State):} Himpunan state penerima. Karena final state adalah bagian dari state yang ada, maka $F \subseteq Q$[cite: 3].
-\end{enumerate}
-
-\subsection{Tabel Transisi}
-Fungsi transisi $\delta$ sangat ideal jika direpresentasikan dalam bentuk tabel (Tabel Transisi)[cite: 3]. Baris merepresentasikan state asal, dan kolom merepresentasikan simbol input[cite: 3]. Persilangan antara baris dan kolom adalah state tujuan[cite: 3].
-
-Misalkan kita memiliki DFA dengan $Q = \{q_0, q_1, q_2\}$, $\Sigma = \{a, b\}$, dan $F = \{q_0, q_1\}$. Berikut adalah bentuk tabel transisinya[cite: 3]:
+\subsection{Merangkum ke Tabel Transisi}
+Biar fungsi $\delta$ gampang dibaca, kita biasa bikin jadi tabel. Baris tabel buat \textit{state} asal, dan kolom tabel buat input simbolnya. Isian tabelnya adalah \textit{state} tujuannya.
 
 \begin{table}[h]
 \centering
 \begin{tabular}{@{}ccc@{}}
 \toprule
 \textbf{$\delta$} & \textbf{a} & \textbf{b} \\ \midrule
-$\rightarrow *q_0$ & $q_0$ & $q_1$ \\
-$*q_1$ & $q_0$ & $q_2$ \\
-$q_2$ & $q_2$ & $q_2$ \\ \bottomrule
+$\rightarrow *q_0$ & $q_1$ & $q_5$ \\
+$*q_1$ & $q_5$ & $q_2$ \\
+$q_2$ & $q_5$ & $q_3$ \\
+$q_3$ & $q_4$ & $q_5$ \\
+$*q_4$ & $q_5$ & $q_5$ \\
+$q_5$ & $q_5$ & $q_5$ \\ \bottomrule
 \end{tabular}
-\caption{Tabel Transisi. Tanda panah ($\rightarrow$) menandakan state awal, dan asterisk ($*$) menandakan final state.}
+\caption{Contoh Tabel Transisi DFA. Tanda ($\rightarrow$) nandain state awal, tanda ($*$) nandain final state. State $q_5$ terlihat sebagai Dead State karena selalu balik ke dirinya sendiri.}
 \end{table}
 
-\subsection{Fungsi Transisi Diperluas dan Bahasa yang Diterima}
-Fungsi transisi $\delta$ biasa hanya membaca satu karakter. Untuk membaca kumpulan karakter (string), digunakan \textbf{fungsi transisi diperluas} yang disimbolkan dengan $\delta^*$[cite: 3].
-\[ \delta^* : Q \times \Sigma^* \rightarrow Q \][cite: 3]
-$\delta^*(q, w) = q'$ menggambarkan bahwa dari state $q$, jika diberikan rentetan string $w$, maka akan berakhir di state $q'$[cite: 3].
+\subsection{Fungsi Transisi Diperluas ($\delta^*$)}
+Fungsi $\delta$ itu kan cuma ngebaca satu karakter. Nah, gimana caranya ngitung kalau inputnya satu kalimat utuh (string)? Kita pakai \textbf{fungsi transisi diperluas} ($\delta^*$).
+Formatnya: $\delta^* : Q \times \Sigma^* \rightarrow Q$.
+Ini bacanya: $\delta^*(q, w) = q'$ yang berarti dari state $q$, kalau dikasih deretan string $w$, dia bakal jalan nelusurin transisi satu-satu sampai ujungnya berhenti di state $q'$.
 
-\textbf{Bahasa yang Diterima ($L(M)$):} 
-Adalah himpunan dari seluruh string yang berakhir di state final[cite: 3].
-\[ L(M) = \{ w \in \Sigma^* \mid \delta^*(q_0, w) \in F \} \][cite: 3]
-
-\textbf{Bahasa yang Ditolak ($\overline{L(M)}$):}
-Adalah himpunan dari seluruh string yang berakhir di state bukan final[cite: 3].
-\[ \overline{L(M)} = \{ w \in \Sigma^* \mid \delta^*(q_0, w) \notin F \} \][cite: 3]
+Berdasarkan ini, kita bisa ngerumusin \textbf{Bahasa yang Diterima ($L(M)$)} secara matematis:
+\[ L(M) = \{ w \in \Sigma^* \mid \delta^*(q_0, w) \in F \} \]
+Artinya: Himpunan semua string $w$ yang kalau dijalanin dari state awal ($q_0$) bakal mendarat cantik di dalam himpunan \textit{final state} ($F$).
 
 \newpage
-\section{Loop Transisi dan Dead State}
+\section{Kumpulan Studi Kasus Perancangan DFA}
 
-Sebuah \textbf{Loop Transisi} terjadi ketika fungsi transisi mengarahkan kembali ke state asalnya, yaitu $\delta(q_i, a) = q_i$[cite: 2]. Saat mesin mengeksekusi loop, mesin membaca simbol pada input tape dan menggeser head, namun posisi state tidak berubah[cite: 2].
+Di bagian ini kita bakal bedah tuntas berbagai contoh kasus dari pola bahasa yang sederhana sampai yang butuh analisis panjang.
 
-\subsection{Makna dan Karakteristik Loop}
-Keberadaan loop bukan berarti mesin tersangkut, melainkan menunjukkan desain yang efisien dan stabil[cite: 2]. Ada tiga karakteristik penting dari loop transisi:
-\begin{enumerate}
-    \item \textbf{Satu Transisi per Simbol:} Loop membantu mesin untuk tetap mematuhi aturan deterministik bahwa setiap simbol harus memiliki transisi, sehingga loop melengkapi arah transisi yang tidak menyebabkan perubahan logika[cite: 2].
-    \item \textbf{Tidak Melanggar Determinisme:} Output dari loop bersifat tunggal dan pasti, sehingga sifat deterministik tetap valid[cite: 2].
-    \item \textbf{Representasi Stabilitas:} Menandakan bahwa setelah mencapai suatu kondisi, mesin tidak berubah logika saat membaca simbol tertentu[cite: 2].
-\end{enumerate}
+\subsection{Kasus 1: Mesin Pengecek Tepat Pola "abba"}
+Mesin ini didesain spesifik cuma nerima satu buah string aja, yaitu $L = \{abba\}$. Selain itu pasti gagal.
 
-\textbf{Contoh Analisis: DFA Paritas (Jumlah 0 Genap)} \\
-Pada mesin yang bertugas menghitung apakah jumlah 0 bernilai genap, simbol "1" akan selalu menghasilkan loop di state mana pun[cite: 2]. Ini dikarenakan angka "1" bersifat netral dan tidak mempengaruhi penghitungan paritas genap/ganjil dari angka "0"[cite: 2]. Loop pada angka 1 memastikan bahwa status genap tetap genap, dan ganjil tetap ganjil[cite: 2].
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,on grid,auto, thick]
+       \node[state,initial,initial text=] (q0) {$q_0$};
+       \node[state] (q1) [right=of q0] {$q_1$};
+       \node[state] (q2) [right=of q1] {$q_2$};
+       \node[state] (q3) [right=of q2] {$q_3$};
+       \node[state,accepting] (q4) [right=of q3] {$q_4$};
+       \node[state] (q5) [above=of q2] {$q_5$};
 
-\subsection{Dead State / Trap State}
-Bentuk paling ekstrem dari loop adalah \textbf{Trap State} (atau \textit{Dead State})[cite: 2, 3]. 
-Trap state adalah sebuah state (yang \textit{bukan} final state) di mana \textbf{semua} input dari alfabet akan membuat mesin melakukan loop kembali ke state tersebut[cite: 2].
-\[ \delta(q_t, 0) = q_t \quad \text{dan} \quad \delta(q_t, 1) = q_t \][cite: 2]
-\begin{itemize}
-    \item Jika mesin masuk ke trap state, mesin tidak akan pernah bisa keluar[cite: 2].
-    \item Fungsi trap state adalah "menyerap" semua sisa input yang ada pada pita[cite: 2].
-    \item Karena trap state bukan final state, maka string apa pun yang pernah menyentuh trap state dapat dipastikan 100\% ditolak[cite: 2].
-\end{itemize}
+       \path[->] 
+       (q0) edge node {a} (q1)
+            edge [bend left=20] node {b} (q5)
+       (q1) edge node {b} (q2)
+            edge [bend left=10] node {a} (q5)
+       (q2) edge node {b} (q3)
+            edge [bend left=10] node {a} (q5)
+       (q3) edge node {a} (q4)
+            edge node {b} (q5)
+       (q4) edge [swap] node {a, b} (q5)
+       (q5) edge [loop right] node {a, b} (q5);
+    \end{tikzpicture}
+    \caption{DFA Penerima "abba". $q_5$ adalah Trap State.}
+\end{figure}
 
-\newpage
-\section{Contoh Komprehensif Perancangan dan Simulasi DFA}
+Gimana jalannya kalau kita masukin string yang bener ($abba$)?
+1. Mulai di $q_0$, dapet 'a' $\rightarrow$ masuk ke $q_1$.
+2. Di $q_1$, dapet 'b' $\rightarrow$ masuk ke $q_2$.
+3. Di $q_2$, dapet 'b' $\rightarrow$ masuk ke $q_3$.
+4. Di $q_3$, dapet 'a' $\rightarrow$ masuk ke $q_4$.
+Karena udah habis stringnya, dan mesin berakhir di $q_4$ yang merupakan \textit{final state}, maka \textbf{Diterima}.
 
-Berikut adalah beberapa contoh perancangan mesin DFA berserta dengan simulasi fungsi transisi diperluasnya.
+Tapi kalau stringnya salah, misalnya $aba$:
+1. Mulai $q_0$, dapet 'a' $\rightarrow$ $q_1$.
+2. Di $q_1$, dapet 'b' $\rightarrow$ $q_2$.
+3. Di $q_2$, dapet 'a' $\rightarrow$ langsung dilempar ke \textit{trap state} $q_5$, karena polanya salah.
+String habis di $q_5$ (bukan final state), berarti \textbf{Ditolak}.
 
-\subsection{Contoh 1: DFA Minimal Satu Simbol "1"}
-Misalkan $L(M) = \{ w \in \{0,1\}^* \mid w \text{ mengandung minimal satu } 1 \}$[cite: 2].
+\subsection{Kasus 2: Minimal Ada Satu Angka "1"}
+Kita pengen deteksi string yang penting ada angka "1"-nya. Bahasa rincinya $L(M) = \{ w \in \{0,1\}^* \mid w \text{ mengandung minimal satu } 1 \}$.
 
 \begin{figure}[h]
     \centering
@@ -245,21 +270,18 @@ Misalkan $L(M) = \{ w \in \{0,1\}^* \mid w \text{ mengandung minimal satu } 1 \}
             edge node {1} (q1)
        (q1) edge [loop above] node {0, 1} (q1);
     \end{tikzpicture}
-    \caption{DFA Mengandung Minimal Satu "1"}
+    \caption{DFA Minimal Satu "1"}
 \end{figure}
 
-\textbf{Simulasi Input $w = 0011$ (Diterima)}[cite: 2]:
+Konsepnya sederhana banget:
 \begin{itemize}
-    \item $\delta(q_0, 0) = q_0$ (Loop pencarian, belum menemukan 1)[cite: 2].
-    \item $\delta(q_0, 0) = q_0$ (Loop pencarian)[cite: 2].
-    \item $\delta(q_0, 1) = q_1$ (Berpindah, "1" ditemukan)[cite: 2].
-    \item $\delta(q_1, 1) = q_1$ (Loop stabilitas, tetap di accept state)[cite: 2].
-    \item Karena berakhir di $q_1 \in F$, maka string \textbf{Diterima}[cite: 2].
+    \item \textbf{Fase $q_0$ (Pencarian)}: Mesin nungguin angka 1. Kalau dapet 0 terus, mesin muter (loop) di situ aja dan statusnya tetep nunggu.
+    \item \textbf{Fase $q_1$ (Ditemukan)}: Sekali dapet angka 1, dia langsung pindah dan jadi \textit{accept state}. Setelah itu, nggak peduli dikasih input 0 atau 1 berapa banyak pun, mesin tetep nahan posisinya di $q_1$ (stabilitas).
 \end{itemize}
+Contoh kalau dikasih string $0000$, mesin cuma muter di $q_0$ empat kali, dan ujung-ujungnya \textbf{Ditolak}.
 
-\subsection{Contoh 2: DFA String Dimulai dengan "0"}
-Misalkan $L(M) = \{ 0, 00, 01, 000, 010, \dots \}$[cite: 3].
-Ini berarti huruf pertama \textit{wajib} 0. Jika huruf pertamanya 1, maka otomatis gagal selamanya.
+\subsection{Kasus 3: Harus Diawali Angka "0"}
+Kita buat mesin buat himpunan $L = \{0, 00, 01, 000, 010, \dots\}$. Pokoknya wajib huruf pertama itu "0".
 
 \begin{figure}[h]
     \centering
@@ -274,23 +296,20 @@ Ini berarti huruf pertama \textit{wajib} 0. Jika huruf pertamanya 1, maka otomat
        (B) edge [loop right] node {0, 1} (B)
        (C) edge [loop right] node {0, 1} (C);
     \end{tikzpicture}
-    \caption{DFA Dimulai dengan 0. State C bertindak sebagai Dead State.}
+    \caption{DFA Diawali "0". State C adalah Dead State.}
 \end{figure}
 
-\textbf{Simulasi Input $w = 101$ (Ditolak)}[cite: 3]:
+Logikanya begini:
 \begin{itemize}
-    \item $\delta(A, 1) = C$ (Huruf pertama salah, masuk ke Dead State)[cite: 3].
-    \item $\delta(C, 0) = C$ (Terjebak di Dead State)[cite: 3].
-    \item $\delta(C, 1) = C$ (Terjebak di Dead State)[cite: 3].
-    \item Karena berakhir di $C \notin F$, maka string \textbf{Ditolak}[cite: 3].
+    \item Mulai di $A$. Cek langsung karakter pertama. Kalau "0", dia lolos masuk ke $B$ (\textit{Final State}). Di state $B$, huruf-huruf setelahnya (0 atau 1) udah nggak ngaruh lagi, dia bakal \textit{loop} dan tetep diterima.
+    \item Tapi, kalau karakter pertamanya "1", misalnya string $101$, dari awal udah salah. Mesin langsung ngebuang ke $C$ (\textit{Dead State}). Dari sini, sisa angkanya (01) cuma diserap sama $C$ dan akhirnya pasti ditolak.
 \end{itemize}
 
-\subsection{Contoh 3: DFA Panjang String Persis 2}
-Misalkan $L(M) = \{00, 01, 10, 11\}$, dengan alfabet $\Sigma = \{0, 1\}$[cite: 3].
-
+\subsection{Kasus 4: Panjang String Pas Banget 2 Karakter}
+Nah, kalau yang ini buat nyari string yang panjangnya persis dua karakter aja: $L = \{00, 01, 10, 11\}$.
 \begin{figure}[h]
     \centering
-    \begin{tikzpicture}[shorten >=1pt,node distance=3cm,on grid,auto, thick]
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,on grid,auto, thick]
        \node[state,initial,initial text=] (A) {$A$};
        \node[state] (B) [right=of A] {$B$};
        \node[state,accepting] (C) [right=of B] {$C$};
@@ -302,14 +321,40 @@ Misalkan $L(M) = \{00, 01, 10, 11\}$, dengan alfabet $\Sigma = \{0, 1\}$[cite: 3
        (C) edge node {0, 1} (D)
        (D) edge [loop right] node {0, 1} (D);
     \end{tikzpicture}
-    \caption{DFA Panjang Tepat 2. State D bertindak sebagai Dead State.}
+    \caption{DFA Panjang Persis 2 Karakter}
 \end{figure}
+Perjalanannya gampang banget ditebak. Kalau masukin $001$:
+- Karakter 1 ('0') pindah dari A ke B.
+- Karakter 2 ('0') pindah dari B ke C (posisi saat ini \textit{accept}).
+- Sayangnya ada karakter 3 ('1'). Mesin dilempar dari C ke \textit{Dead State} D. Akhirnya \textbf{Ditolak}.
 
-Pada kasus ini, langkah komputasinya sangat linier. Mesin hanya menerima string jika setelah membaca tepat dua karakter, mesin berhenti[cite: 3]. Jika ada karakter ketiga yang dibaca, mesin akan langsung pindah ke state D (\textit{Dead State}) dan menolak string tersebut selamanya[cite: 3].
+\subsection{Kasus 5: Pengecekan Pola Terstruktur ($a^n b$)}
+Kita mau buat bahasa yang isinya cuma huruf 'a' berturut-turut (boleh nggak ada 'a' sama sekali, makanya $n \ge 0$), tapi wajib ditutup dengan tepat satu huruf 'b'.
+Jadi bahasa yang diterima itu $\{b, ab, aab, aaab, \dots\}$.
 
-\subsection{Contoh 4: Evaluasi Pola String yang Rumit}
-Kita uji DFA dengan fungsi perluasan $\delta^*(q_0, w)$ menggunakan definisi pada tabel transisi Contoh 3 sebelumnya (dengan state $q_0, q_1, q_2$)[cite: 3].
-Alfabet $\Sigma=\{a,b\}$, $F=\{q_0, q_1\}$.
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=3cm,on grid,auto, thick]
+       \node[state,initial,initial text=] (q0) {$q_0$};
+       \node[state,accepting] (q1) [right=of q0] {$q_1$};
+       \node[state] (q2) [right=of q1] {$q_2$};
+
+       \path[->] 
+       (q0) edge [loop above] node {a} (q0)
+            edge node {b} (q1)
+       (q1) edge node {a, b} (q2)
+       (q2) edge [loop right] node {a, b} (q2);
+    \end{tikzpicture}
+    \caption{DFA Pola $a^n b$}
+\end{figure}
+\begin{itemize}
+    \item Kalau masukin $aab$: Di $q_0$ mesin bakal baca 'a' dua kali (murni \textit{looping}). Lalu baca 'b' dan pindah ke $q_1$. Karena string habis dan $q_1$ itu \textit{final}, mesin \textbf{Menerima} ($Accept$).
+    \item Kalau masukin $bab$: Awal baca 'b' mesin langsung pindah manis ke $q_1$. Eh, pas huruf selanjutnya 'a' muncul, karena aturannya cuma boleh ada satu 'b' di akhir, mesin langsung ngebuang ke \textit{trap state} $q_2$. Akhirnya string $bab$ \textbf{Ditolak}.
+\end{itemize}
+
+\subsection{Kasus 6: Tracking Panjang Fungsi Transisi ($\delta^*$)}
+Biar makin paham cara mesin mikir, kita simulasikan penelusuran string panjang pakai fungsi transisi diperluas.
+Diketahui DFA dengan $\Sigma=\{a,b\}$, $F=\{q_0, q_1\}$, dan aturannya:
 
 \begin{figure}[h]
     \centering
@@ -326,22 +371,21 @@ Alfabet $\Sigma=\{a,b\}$, $F=\{q_0, q_1\}$.
        (q2) edge [loop above] node {a} (q2)
             edge [loop right] node {b} (q2);
     \end{tikzpicture}
-    \caption{DFA Pola Bahasa. State $q_2$ adalah Dead State.}
+    \caption{DFA Multi-Final State. State $q_2$ bertindak sebagai Dead State.}
 \end{figure}
 
-\textbf{Tracing Input $w = abababaa$}[cite: 3]:
-Langkah-langkah evaluasinya diselesaikan dari kiri ke kanan dengan menurunkan fungsi transisi yang diperluas:
+Kita masukin string yang lumayan panjang: \textbf{abababaa}. Kita bedah perlahan dari kiri ke kanan:
 \begin{enumerate}
-    \item $\delta^*(q_0, abababaa) \Rightarrow \delta(q_0, a)$ menghasilkan $q_0$, sisa string: $bababaa$[cite: 3].
-    \item $\Rightarrow \delta^*(q_0, bababaa) \Rightarrow \delta(q_0, b)$ menghasilkan $q_1$, sisa string: $ababaa$[cite: 3].
-    \item $\Rightarrow \delta^*(q_1, ababaa) \Rightarrow \delta(q_1, a)$ menghasilkan $q_0$, sisa string: $babaa$[cite: 3].
-    \item $\Rightarrow \delta^*(q_0, babaa) \Rightarrow \delta(q_0, b)$ menghasilkan $q_1$, sisa string: $abaa$[cite: 3].
-    \item $\Rightarrow \delta^*(q_1, abaa) \Rightarrow \delta(q_1, a)$ menghasilkan $q_0$, sisa string: $baa$[cite: 3].
-    \item $\Rightarrow \delta^*(q_0, baa) \Rightarrow \delta(q_0, b)$ menghasilkan $q_1$, sisa string: $aa$[cite: 3].
-    \item $\Rightarrow \delta^*(q_1, aa) \Rightarrow \delta(q_1, a)$ menghasilkan $q_0$, sisa string: $a$[cite: 3].
-    \item $\Rightarrow \delta^*(q_0, a) \Rightarrow \delta(q_0, a)$ menghasilkan $q_0$ (String habis)[cite: 3].
+    \item Dari $q_0$ baca 'a', mesin tetep di $q_0$. (Sisa string: $bababaa$)
+    \item Dari $q_0$ baca 'b', mesin loncat ke $q_1$. (Sisa string: $ababaa$)
+    \item Dari $q_1$ baca 'a', mesin balik lagi ke $q_0$. (Sisa string: $babaa$)
+    \item Dari $q_0$ baca 'b', mesin loncat ke $q_1$. (Sisa string: $abaa$)
+    \item Dari $q_1$ baca 'a', mesin balik lagi ke $q_0$. (Sisa string: $baa$)
+    \item Dari $q_0$ baca 'b', mesin loncat ke $q_1$. (Sisa string: $aa$)
+    \item Dari $q_1$ baca 'a', mesin balik lagi ke $q_0$. (Sisa string: $a$)
+    \item Dari $q_0$ baca 'a', mesin ngeloop di $q_0$. (Sisa string habis)
 \end{enumerate}
-Karena \textit{tracing} berakhir tepat pada state $q_0$ dan $q_0 \in F$ (State AKHIR), maka kalimat $abababaa$ dinyatakan \textbf{Diterima}[cite: 3].
-Dapat disimpulkan bahwa bahasa $L(M)$ ini menerima string seperti $abababaa$, $aaabab$, $aabababa$, selama tidak menjumpai kombinasi substring "bb" yang memicu perpindahan ke dead state $q_2$[cite: 3].
+\textit{Tracing} atau penelusuran ini berakhir di state $q_0$. Karena $q_0$ itu termasuk state AKHIR ($q_0 \in F$), maka kalimat $abababaa$ sukses \textbf{Diterima}.
+Kalau kita perhatiin, mesin ini sebenarnya nerima pola selang-seling, asalkan dia nggak nemu "bb" berurutan yang bakal ngebuang dia ke $q_2$.
 
 \end{document}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.5)  6 MAY 2026 16:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.5)  6 MAY 2026 16:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1325,20 +1325,20 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
 (Font)              scaled to size 12.0pt on input line 108.
 LaTeX Font Info:    Trying to load font information for TS1+ntxtlf on input lin
-e 115.
+e 114.
  (D:\miktex\tex/latex/newtx\ts1ntxtlf.fd
 File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
 )
 LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
-(Font)              scaled to size 12.0pt on input line 115.
+(Font)              scaled to size 12.0pt on input line 114.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 10.95pt on input line 158.
+(Font)              scaled to size 10.95pt on input line 151.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 10.95pt on input line 158.
+(Font)              scaled to size 10.95pt on input line 151.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -1354,7 +1354,23 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[3]
+[3{D:/miktex/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc}]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 204.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\delta' on input line 204.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 204.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 204.
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -1362,7 +1378,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[4{D:/miktex/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc}]
+[4]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 8.8pt on input line 260.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 6.6pt on input line 260.
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -1371,10 +1392,28 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [5]
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 8.8pt on input line 222.
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 6.6pt on input line 222.
+Overfull \hbox (5.70541pt too wide) in paragraph at lines 309--330
+\T1/ntxtlf/m/n/12 Nah, kalau yang ini buat nyari string yang pan-jangnya per-si
+s dua karak-ter aja: $\OML/ntxmi/m/it/12 L \U/ntxmia/m/it/12 = \LMS/ntxsy/m/n/1
+2 f\OT1/minntx/m/n/12 00\OML/ntxmi/m/it/12 ; \OT1/minntx/m/n/12 01\OML/ntxmi/m/
+it/12 ; \OT1/minntx/m/n/12 10\OML/ntxmi/m/it/12 ; \OT1/minntx/m/n/12 11\LMS/ntx
+sy/m/n/12 g$\T1/ntxtlf/m/n/12 .
+ []
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 331.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 331.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 331.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1385,53 +1424,53 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [6]
 
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\delta' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 355.
+
+
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
 (fancyhdr)                \setlength{\headheight}{13.59999pt}.
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[7]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 13.59999pt, for example:
-(fancyhdr)                \setlength{\headheight}{13.59999pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
-
-[8]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 13.59999pt, for example:
-(fancyhdr)                \setlength{\headheight}{13.59999pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
-
-[9] (D:\noteify\assets\materials\otomata\rendered\dfa.aux)
+[7] (D:\noteify\assets\materials\otomata\rendered\dfa.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
  ***********
 Package rerunfilecheck Info: File `dfa.out' has not changed.
-(rerunfilecheck)             Checksum: A347D9B26C3930BB8BCDEA71F55F1F15;3551.
+(rerunfilecheck)             Checksum: B9DCB1B4133FA83D72975D58DBC0121D;3821.
  ) 
 Here is how much of TeX's memory you used:
- 31089 strings out of 467870
- 571324 string characters out of 5435188
- 983263 words of memory out of 5000000
- 59383 multiletter control sequences out of 15000+600000
- 697968 words of font info for 129 fonts, out of 8000000 for 9000
+ 31110 strings out of 467870
+ 571604 string characters out of 5435188
+ 982262 words of memory out of 5000000
+ 59407 multiletter control sequences out of 15000+600000
+ 700097 words of font info for 135 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 98i,13n,108p,504b,940s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 98i,13n,108p,468b,944s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <D:/miktex/fonts/type1/public/newtx/NewTXMI.pfb><D:/miktex/fonts/type1/public
 /tex-gyre/qtmr.pfb><D:/miktex/fonts/type1/public/newtx/txmiaX.pfb><D:/miktex/fo
 nts/type1/public/newtx/txsys.pfb><D:/miktex/fonts/type1/public/newtx/ztmb.pfb><
 D:/miktex/fonts/type1/public/newtx/ztmr.pfb><D:/miktex/fonts/type1/public/newtx
 /ztmri.pfb>
-Output written on D:\noteify\assets\materials\otomata\rendered\dfa.pdf (9 pages
-, 186356 bytes).
+Output written on D:\noteify\assets\materials\otomata\rendered\dfa.pdf (7 pages
+, 190870 bytes).
 PDF statistics:
- 203 PDF objects out of 1000 (max. 8388607)
- 52 named destinations out of 1000 (max. 500000)
- 133 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 191 PDF objects out of 1000 (max. 8388607)
+ 43 named destinations out of 1000 (max. 500000)
+ 141 words of extra memory for PDF output out of 10000 (max. 10000000)
 
