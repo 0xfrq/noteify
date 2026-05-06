@@ -4,18 +4,19 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Mengenal Non-Deterministic Finite Automata (NFA)}{2}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Apa itu Mesin NFA dan Bedanya dengan DFA?}{2}{subsection.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Syarat Diterimanya String di NFA}{2}{subsection.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Transisi Kosong: Epsilon ($\epsilon $)}{3}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Gimana Cara Kerja Transisi Epsilon?}{3}{subsection.2.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Contoh Transisi Epsilon. Dari $q_1$, mesin bisa seketika berada di $q_2$ tanpa baca huruf apa pun.}}{3}{figure.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Definisi Formal dan Tabel Transisi NFA}{4}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Tabel Transisi NFA}{4}{subsection.3.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Tabel Transisi NFA. Perhatikan pemakaian kurung kurawal dan himpunan kosong ($\emptyset $).}}{4}{table.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Kumpulan Studi Kasus Perancangan NFA}{5}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Kasus 1: Pola Berakhiran "01"}{5}{subsection.4.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces NFA String Berakhiran "01"}}{5}{figure.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Kasus 2: Mengandung Substring "11" atau "00"}{5}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Kasus 3: NFA Tanpa Jalan Buntu (Mirip DFA)}{5}{subsection.4.3}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces NFA dengan Transisi Epsilon mendeteksi "11" atau "00"}}{6}{figure.3}\protected@file@percent }
-\gdef \@abspage@last{6}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Kenapa Harus Ada NFA?}{2}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Aturan Main Diterimanya String di NFA}{2}{subsection.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Kumpulan Studi Kasus Perancangan NFA}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Kasus 1: Pola Berakhiran "01"}{3}{subsection.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces NFA String Berakhiran "01"}}{3}{figure.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Kasus 2: Mengandung Substring "010"}{3}{subsection.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces NFA Mendeteksi Substring "010"}}{3}{figure.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces NFA: Karakter ketiga dari belakang adalah 1}}{4}{figure.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Kasus 3: Karakter Ketiga dari Belakang adalah "1"}{4}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Kasus 4: Menggunakan Jalan Tol Epsilon ($\epsilon $)}{4}{subsection.2.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces NFA Epsilon untuk mendeteksi substring "11" atau "00"}}{4}{figure.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Kasus 5: Pengecekan Pola Terstruktur $(a \cup b)^* a b b$}{4}{subsection.2.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces NFA untuk pola regex $(a \cup b)^* a b b$}}{5}{figure.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.6}Kasus 6: Bahasa Tanpa Salah Satu Huruf (Missing Letter)}{5}{subsection.2.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces NFA String Kehilangan Minimal Satu Huruf Alfabet}}{5}{figure.6}\protected@file@percent }
+\gdef \@abspage@last{5}

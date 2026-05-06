@@ -87,7 +87,7 @@
 \title{
   {\LARGE\bfseries TEORI BAHASA DAN AUTOMATA}\\[0.5em]
   {\large Modul Pembelajaran: Non-Deterministic Finite Automata (NFA)}\\[0.8em]
-  {\normalsize Penjelasan mendalam mengenai konsep non-determinisme, transisi epsilon ($\epsilon$), definisi matematis, dan studi kasus perancangan mesin NFA.}
+  {\normalsize Penjelasan mendalam mengenai konsep non-determinisme, transisi epsilon ($\epsilon$), dan berbagai studi kasus perancangan mesin NFA dari dasar hingga mahir.}
 }
 \author{}
 \date{}
@@ -104,99 +104,36 @@
 
 \section{Mengenal Non-Deterministic Finite Automata (NFA)}
 
-\subsection{Apa itu Mesin NFA dan Bedanya dengan DFA?}
-Kalau sebelumnya kita udah belajar DFA yang sifatnya serba pasti dan kaku banget, sekarang kita kenalan sama saudaranya yang jauh lebih fleksibel, yaitu \textit{Non-Deterministic Finite Automaton} (NFA). Secara fisik bayangannya mirip: ada mesin, ada pita input (\textit{Input Tape}), dan head yang ngebaca karakter satu per satu dari kiri ke kanan.
+\subsection{Kenapa Harus Ada NFA?}
+Di materi sebelumnya, kita udah bahas DFA yang sifatnya kaku dan serba pasti. Kalau di DFA, tiap \textit{state} wajib punya satu jalan keluar untuk setiap simbol, nggak boleh lebih dan nggak boleh kurang.
 
-Tapi, \textbf{cara kerjanya beda banget}. Sifat "Non-Deterministik" di sini bikin mesin NFA punya kemampuan buat "menebak" atau bercabang. Di NFA, kalau mesin dapet satu input, dia nggak cuma punya satu jalan pasti. Dia bisa bereaksi dengan tiga cara ini:
+Tapi pada praktiknya, pas kita mau mendeteksi pola bahasa yang agak rumit, ngerancang DFA itu bisa bikin pusing karena \textit{state}-nya jadi meledak (banyak banget). Nah, di sinilah \textit{Non-Deterministic Finite Automaton} (NFA) jadi pahlawan. NFA ini ngasih kita kebebasan penuh buat ngerancang mesin dengan cara yang lebih fleksibel dan sesuai sama intuisi manusia.
+
+Di NFA, kalau mesin dapet satu input, dia bisa bereaksi dengan tiga cara ini:
 \begin{itemize}
-    \item \textbf{Bercabang (Multiple Paths):} Satu karakter input bisa bikin mesin loncat ke lebih dari satu \textit{state} sekaligus.
-    \item \textbf{Jalan Buntu (Dead End):} Mesin bisa aja nggak punya jalur panah transisi buat suatu karakter tertentu. Kalau dapet karakter itu, cabangnya langsung mati (gagal).
-    \item \textbf{Gerak Gaib (Epsilon Transition):} Mesin bisa loncat ke \textit{state} lain secara tiba-tiba tanpa perlu ngebaca karakter apa pun dari pita! Ini yang paling sakti di NFA.
+    \item \textbf{Multiple Paths (Bercabang):} Satu karakter bisa bikin mesin loncat ke lebih dari satu \textit{state} sekaligus. Mesin bakal seolah-olah "ngekloning" dirinya sendiri buat nyusurin semua jalan itu.
+    \item \textbf{Dead End (Jalan Buntu):} Kalau mesin dapet karakter yang nggak ada panah transisinya, kloningan mesin di jalur itu langsung mati atau gagal.
+    \item \textbf{Epsilon Transition ($\epsilon$):} Ini kemampuan buat loncat atau pindah ke \textit{state} lain secara gaib, tanpa perlu ngebaca karakter apa pun dari pita input!
 \end{itemize}
 
-\begin{notebox}
-\textbf{Analogi Sederhana NFA} \\
-Bayangin NFA ini kayak kamu lagi main game yang ada jalan bercabang. Tiap ketemu persimpangan, karakter kamu bakal "ngekloning" dirinya sendiri dan nyusurin semua jalan yang ada secara bersamaan. Kalau salah satu aja dari kloningan itu nyampe ke garis finish (\textit{Final State}) pas waktu habis, kamu menang (\textit{Accept}). Kloningan lain yang nyasar atau mati di jalan buntu nggak bakal ngaruh selama ada satu yang sukses.
-\end{notebox}
+\subsection{Aturan Main Diterimanya String di NFA}
+Karena mesin NFA bisa bercabang jadi banyak kloningan pas lagi ngebaca string, syarat biar string itu \textbf{diterima} (\textit{Accept}) simpel banget:
+\textbf{Asalkan ada minimal SATU aja jalur kloningan yang sukses berhenti di Final State pas string-nya habis dibaca, maka string itu dianggap sah dan diterima.}
 
-\subsection{Syarat Diterimanya String di NFA}
-Karena mesinnya jalan bercabang secara paralel, aturan main diterimanya string jadi lebih longgar dibandingkan DFA.
-\begin{itemize}
-    \item \textbf{Diterima (Accept):} String diterima kalau ada \textbf{setidaknya satu} jalur komputasi (salah satu kloningan) yang berhasil berhenti pas di \textit{Final State} setelah karakter terakhir dibaca.
-    \item \textbf{Ditolak (Reject):} String cuma bakal ditolak kalau \textbf{semua} jalur yang dicoba ternyata jalan buntu, atau ujung-ujungnya berakhir di \textit{state} biasa (bukan \textit{Final State}).
-\end{itemize}
-
-\newpage
-\section{Transisi Kosong: Epsilon ($\epsilon$)}
-
-Ini adalah salah satu fitur paling unik dari NFA yang sering banget dipakai, yaitu Transisi Epsilon ($\epsilon$-transition). Di beberapa buku teks, kadang ditulis pakai lambda ($\lambda$), tapi maksudnya sama aja.
-
-\subsection{Gimana Cara Kerja Transisi Epsilon?}
-Biasanya, buat pindah dari \textit{state} A ke \textit{state} B, mesin butuh "ongkos" berupa membaca satu karakter dari pita input. Nah, panah yang dilabeli $\epsilon$ ini artinya jalan tol gratis. Mesin boleh pindah ke state tujuan tanpa perlu mengonsumsi atau membaca karakter dari pita sama sekali.
-
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}[shorten >=1pt,node distance=3cm,on grid,auto, thick]
-       \node[state,initial,initial text=] (q0) {$q_0$};
-       \node[state] (q1) [right=of q0] {$q_1$};
-       \node[state,accepting] (q2) [right=of q1] {$q_2$};
-
-       \path[->] 
-       (q0) edge node {a} (q1)
-       (q1) edge node {$\epsilon$} (q2)
-            edge [loop above] node {b} (q1);
-    \end{tikzpicture}
-    \caption{Contoh Transisi Epsilon. Dari $q_1$, mesin bisa seketika berada di $q_2$ tanpa baca huruf apa pun.}
-\end{figure}
-
-Fitur ini ngebantu banget pas kita mau merancang mesin untuk mendeteksi berbagai pola bahasa yang kompleks, karena kita bisa menghubungkan berbagai mesin kecil jadi satu kesatuan dengan gampang pakai jalan tol $\epsilon$ ini.
-
-\newpage
-\section{Definisi Formal dan Tabel Transisi NFA}
-
-Sama kayak DFA, NFA juga digambarkan pakai model matematika 5-tupel: $M = (Q, \Sigma, \delta, q_0, F)$. Bedanya cuma ada di satu tempat, yaitu di **Fungsi Transisinya ($\delta$)**.
-
-\begin{itemize}
-    \item \textbf{$Q$}: Himpunan semua \textit{state}.
-    \item \textbf{$\Sigma$}: Himpunan alfabet (karakter input). Tapi ingat, $\epsilon$ bukan bagian dari alfabet input ya!
-    \item \textbf{$q_0$}: \textit{State} awal.
-    \item \textbf{$F$}: Himpunan \textit{Final State}.
-    \item \textbf{$\delta$ (Fungsi Transisi)}: Nah ini bedanya. Di NFA, pemetaannya adalah $\delta : Q \times (\Sigma \cup \{\epsilon\}) \rightarrow \mathcal{P}(Q)$. 
-\end{itemize}
-
-Maksud dari $\mathcal{P}(Q)$ (Powerset / Himpunan Kuasa) itu apa? Artinya, hasil dari fungsi transisi NFA \textbf{bukanlah satu state tunggal}, melainkan \textbf{sebuah himpunan} state. Himpunan ini bisa isinya satu state, bisa isinya banyak state, atau bahkan bisa himpunan kosong ($\emptyset$) kalau ternyata jalannya buntu.
-
-\subsection{Tabel Transisi NFA}
-Karena hasil pemetaannya berupa himpunan, cara nulis di tabel transisinya juga harus pakai kurung kurawal \{\}.
-
-Misal kita punya NFA di mana di state $q_0$ baca '0' bisa ke $q_0$ atau ke $q_1$, baca '1' cuma ke $q_0$, dan ada transisi $\epsilon$ dari $q_1$ ke $q_2$.
-
-\begin{table}[h]
-\centering
-\begin{tabular}{@{}cccc@{}}
-\toprule
-\textbf{$\delta$} & \textbf{0} & \textbf{1} & \textbf{$\epsilon$} \\ \midrule
-$\rightarrow q_0$ & $\{q_0, q_1\}$ & $\{q_0\}$ & $\emptyset$ \\
-$q_1$ & $\emptyset$ & $\emptyset$ & $\{q_2\}$ \\
-$*q_2$ & $\emptyset$ & $\emptyset$ & $\emptyset$ \\ \bottomrule
-\end{tabular}
-\caption{Tabel Transisi NFA. Perhatikan pemakaian kurung kurawal dan himpunan kosong ($\emptyset$).}
-\end{table}
+Nggak peduli kalau ada puluhan kloningan lain yang mati di jalan buntu atau nyasar ke \textit{state} biasa. Kalau semuanya gagal, baru deh string itu dinyatakan \textbf{ditolak} (\textit{Reject}).
 
 \newpage
 \section{Kumpulan Studi Kasus Perancangan NFA}
 
-Merancang NFA itu rasanya jauh lebih gampang dan lebih natural dibanding ngerancang DFA. Kenapa? Karena kita tinggal fokus bikin jalur buat string yang bener aja. Kalau buat string yang salah, gampang, biarin aja buntu!
+Biar makin paham bedanya NFA dan DFA, mari kita bedah berbagai macam studi kasus. Merancang NFA itu rasanya jauh lebih gampang, karena kita tinggal bikin jalur khusus buat pola yang bener aja, sisanya biarin buntu!
 
 \subsection{Kasus 1: Pola Berakhiran "01"}
-Kita pengen bikin mesin buat bahasa $L = \{w \mid w \text{ diakhiri dengan } 01\}$. Karakter apa pun di depannya bebas.
-
-Kalau pakai DFA, ini bakal lumayan mikir karena harus bikin \textit{loop back} kalau polanya gagal di tengah jalan. Tapi kalau pakai NFA, desainnya \textit{straightforward} banget!
+Kita mau bikin mesin yang nerima string biner, asalkan dua huruf terakhirnya adalah "01". Depannya mau angka apa aja, sepanjang apa pun, bebas. Alfabetnya $\Sigma=\{0,1\}$.
 
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,on grid,auto, thick]
-       \node[state,initial,initial text=] (q0) {$q_0$};
+       \node[state,initial,initial text=Start] (q0) {$q_0$};
        \node[state] (q1) [right=of q0] {$q_1$};
        \node[state,accepting] (q2) [right=of q1] {$q_2$};
 
@@ -208,21 +145,63 @@ Kalau pakai DFA, ini bakal lumayan mikir karena harus bikin \textit{loop back} k
     \caption{NFA String Berakhiran "01"}
 \end{figure}
 
-\textbf{Bedah Alurnya (Misal input "1001"):}
+\textbf{Kenapa NFA ini gampang banget dibaca?}
 \begin{itemize}
-    \item Awal di $q_0$. Baca '1', cuma bisa ngeloop di $q_0$.
-    \item Baca '0' pertama: mesin ngekloning diri. Satu tetap di $q_0$, satu lagi maju ke $q_1$.
-    \item Baca '0' kedua: kloningan di $q_0$ ngekloning diri lagi (ada yang tetep di $q_0$, ada yang maju ke $q_1$). Kloningan yang tadi di $q_1$ malah \textbf{mati/buntu} karena di $q_1$ nggak ada panah buat huruf '0'.
-    \item Baca '1' terakhir: kloningan yang ada di $q_1$ melesat ke $q_2$ (\textit{Final State}). Kloningan lain biarin aja terserah di mana. Karena ada satu yang nyampe di $q_2$, maka \textbf{Diterima}.
+    \item Di state $q_0$, kalau dia dapet angka '0', mesin ini **nebak** atau **bercabang**. Satu kloningan muter tetep di $q_0$ (berasumsi ini bukan '0' yang terakhir), dan satu kloningan lagi maju ke $q_1$ (berasumsi ini adalah awal dari akhiran "01").
+    \item Kalau asumsinya salah (misal abis '0' malah '0' lagi), kloningan yang ada di $q_1$ bakal **mati** karena nggak ada panah '0' dari $q_1$. Tapi kloningan yang di $q_0$ masih hidup dan siap nebak lagi.
 \end{itemize}
 
-\subsection{Kasus 2: Mengandung Substring "11" atau "00"}
-Gimana kalau kita mau deteksi string yang ada "11" berurutan ATAU "00" berurutan di dalamnya? Di sini transisi $\epsilon$ bakal sangat bersinar.
+\subsection{Kasus 2: Mengandung Substring "010"}
+Sekarang kita cari string yang di tengah-tengahnya (atau di mana pun) punya pola berurutan "010". Kalau udah ketemu "010", belakangnya mau diisi apa aja bebas.
 
-Kita pecah jadi tiga bagian:
-1. Mesin tebakan awal (start).
-2. Mesin pendeteksi "11".
-3. Mesin pendeteksi "00".
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,on grid,auto, thick]
+       \node[state,initial,initial text=Start] (q0) {$q_0$};
+       \node[state] (q1) [right=of q0] {$q_1$};
+       \node[state] (q2) [right=of q1] {$q_2$};
+       \node[state,accepting] (q3) [right=of q2] {$q_3$};
+
+       \path[->] 
+       (q0) edge [loop above] node {0, 1} (q0)
+            edge node {0} (q1)
+       (q1) edge node {1} (q2)
+       (q2) edge node {0} (q3)
+       (q3) edge [loop above] node {0, 1} (q3);
+    \end{tikzpicture}
+    \caption{NFA Mendeteksi Substring "010"}
+\end{figure}
+
+\textbf{Alur Logika:}
+State $q_0$ tugasnya cuma nunggu. Tiap kali ada angka '0' lewat, dia ngutus satu kloningan buat masuk ke terowongan $q_1 \rightarrow q_2 \rightarrow q_3$. Kalau di tengah jalan urutannya rusak (misal abis '0' malah '0' lagi di $q_1$), kloningan itu bakal gugur. Tapi kalau berhasil lolos sampai $q_3$, dia bakal santai nge-loop di sana sampai string habis.
+
+\subsection{Kasus 3: Karakter Ketiga dari Belakang adalah "1"}
+Ini adalah contoh klasik di mana NFA jauh menang telak dibanding DFA. Kita mau nerima string yang kalau dihitung dari kanan ke kiri, karakter ketiganya pasti angka '1'.
+Contoh yang diterima: "00\textbf{1}00", "\textbf{1}11", "0101\textbf{1}01".
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,on grid,auto, thick]
+       \node[state,initial,initial text=] (q0) {$q_0$};
+       \node[state] (q1) [right=of q0] {$q_1$};
+       \node[state] (q2) [right=of q1] {$q_2$};
+       \node[state,accepting] (q3) [right=of q2] {$q_3$};
+
+       \path[->] 
+       (q0) edge [loop above] node {0, 1} (q0)
+            edge node {1} (q1)
+       (q1) edge node {0, 1} (q2)
+       (q2) edge node {0, 1} (q3);
+    \end{tikzpicture}
+    \caption{NFA: Karakter ketiga dari belakang adalah 1}
+\end{figure}
+
+\textbf{Rahasia Kekuatan NFA:}
+Bayangin kalau kita bikin ini pakai DFA, kita butuh \textit{state} buat nginget semua kombinasi 3 huruf terakhir (kayak 000, 001, 010, dst), total butuh 8 \textit{state} yang ribet panahnya.
+Tapi pakai NFA, kita cuma butuh 4 \textit{state}! Tiap ketemu angka '1', $q_0$ ngutus kloningan maju ke $q_1$. Kloningan ini dikasih jatah persis dua langkah lagi ke $q_3$. Kalau stringnya keburu habis sebelum nyampe $q_3$, atau stringnya masih sisa pas dia udah di $q_3$ (mati, karena $q_3$ nggak punya panah keluar), berarti itu bukan '1' yang ketiga dari belakang. Cerdas banget, kan?
+
+\subsection{Kasus 4: Menggunakan Jalan Tol Epsilon ($\epsilon$)}
+Kita mau deteksi string yang punya "11" berurutan \textbf{ATAU} "00" berurutan. Ini gampang banget diselesaikan pakai \textit{Epsilon Transition} (loncat gaib tanpa baca karakter).
 
 \begin{figure}[h]
     \centering
@@ -253,13 +232,72 @@ Kita pecah jadi tiga bagian:
        (p2) edge node {0} (p3)
        (p3) edge [loop below] node {0, 1} (p3);
     \end{tikzpicture}
-    \caption{NFA dengan Transisi Epsilon mendeteksi "11" atau "00"}
+    \caption{NFA Epsilon untuk mendeteksi substring "11" atau "00"}
 \end{figure}
 
-\textbf{Kenapa ini gampang banget dibikin?}
-Pas mesin dinyalain, berkat transisi $\epsilon$, mesin seketika itu juga ngekloning dirinya sendiri tanpa baca apa-apa. Satu kloningan nangkring di $q_1$ buat nungguin dan nyari pola "11", sementara kloningan satunya lagi nangkring di $p_1$ buat nyari pola "00". Mereka kerja barengan secara paralel. Kalau salah satu dari pola itu ketemu duluan, beres! String langsung diterima. 
+Pas mesin dinyalain, berkat transisi $\epsilon$, mesin seketika itu juga terbelah jadi dua tanpa perlu baca input apa pun. Satu kloningan \textit{standby} di $q_1$ tugasnya nyari "11". Kloningan satunya lagi \textit{standby} di $p_1$ tugasnya nyari "00". Mereka kerja bareng secara paralel. Siapa yang berhasil nyampe garis \textit{finish} duluan ($q_3$ atau $p_3$), dialah yang bikin stringnya diterima.
 
-\subsection{Kasus 3: NFA Tanpa Jalan Buntu (Mirip DFA)}
-Perlu diingat, setiap DFA itu adalah NFA, tapi nggak semua NFA itu DFA. NFA yang nggak pakai fitur \textit{multiple path} atau epsilon sama sekali, ya sebenarnya bentuknya persis kayak DFA. NFA cuma ngasih kita kebebasan: "Kamu boleh kok nggak nulis semua panahnya kalau emang nggak butuh." Kebebasan inilah yang bikin NFA jadi andalan pas kita mau ngedesain pola bahasa untuk tahap awal, sebelum nanti di- \textit{convert} jadi DFA buat urusan *coding* di program.
+\subsection{Kasus 5: Pengecekan Pola Terstruktur $(a \cup b)^* a b b$}
+Kita mau konversi ekspresi reguler $(a \cup b)^* a b b$ ke dalam NFA. Artinya, depannya boleh diisi kombinasi huruf 'a' atau 'b' sebanyak apa pun, asalkan ditutup dengan tepat pola "abb". Alfabetnya $\Sigma=\{a,b\}$.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=2.5cm,on grid,auto, thick]
+       \node[state,initial,initial text=] (q0) {$q_0$};
+       \node[state] (q1) [right=of q0] {$q_1$};
+       \node[state] (q2) [right=of q1] {$q_2$};
+       \node[state,accepting] (q3) [right=of q2] {$q_3$};
+
+       \path[->] 
+       (q0) edge [loop above] node {a, b} (q0)
+            edge node {a} (q1)
+       (q1) edge node {b} (q2)
+       (q2) edge node {b} (q3);
+    \end{tikzpicture}
+    \caption{NFA untuk pola regex $(a \cup b)^* a b b$}
+\end{figure}
+
+Simulasi kalau kita kasih input "ababb":
+\begin{itemize}
+    \item Baca 'a' ke-1: Mesin bercabang. Ada yang stay di $q_0$, ada yang maju ke $q_1$.
+    \item Baca 'b' ke-2: Yang di $q_0$ tetep di $q_0$. Yang di $q_1$ maju ke $q_2$.
+    \item Baca 'a' ke-3: Yang di $q_0$ bercabang lagi ke $q_0$ dan $q_1$. Yang di $q_2$ mati (karena dari $q_2$ butuhnya 'b').
+    \item Baca 'b' ke-4: Kloningan dari $q_0$ tetep di $q_0$. Kloningan dari $q_1$ maju ke $q_2$.
+    \item Baca 'b' ke-5: Kloningan dari $q_0$ tetep di $q_0$. Kloningan dari $q_2$ maju ke $q_3$.
+    \item String habis! Karena ada satu kloningan yang sukses nangkring di $q_3$ (\textit{Final State}), string "ababb" \textbf{Diterima}.
+\end{itemize}
+
+\subsection{Kasus 6: Bahasa Tanpa Salah Satu Huruf (Missing Letter)}
+Misalkan kita punya alfabet dengan 3 huruf $\Sigma=\{a, b, c\}$. Kita mau mesin nerima string asalkan ada \textbf{salah satu huruf yang nggak pernah muncul} sama sekali.
+Pilihannya: String nggak punya 'a', ATAU nggak punya 'b', ATAU nggak punya 'c'.
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[shorten >=1pt,node distance=3cm,on grid,auto, thick]
+       \node[state,initial,initial text=Start] (S) {$S$};
+       
+       \node[state,accepting] (qA) [above right=1.5cm and 2.5cm of S] {$q_A$};
+       \node[state,accepting] (qB) [right=3cm of S] {$q_B$};
+       \node[state,accepting] (qC) [below right=1.5cm and 2.5cm of S] {$q_C$};
+
+       \path[->] 
+       (S) edge node [above left] {$\epsilon$} (qA)
+           edge node [above] {$\epsilon$} (qB)
+           edge node [below left] {$\epsilon$} (qC)
+           
+       (qA) edge [loop right] node {b, c} (qA)
+       (qB) edge [loop right] node {a, c} (qB)
+       (qC) edge [loop right] node {a, b} (qC);
+    \end{tikzpicture}
+    \caption{NFA String Kehilangan Minimal Satu Huruf Alfabet}
+\end{figure}
+
+\textbf{Alur Logikanya:}
+Begitu jalan, $\epsilon$-transition bikin mesin pecah jadi 3 divisi pemeriksa:
+1. Divisi $q_A$ tugasnya nampung string yang \textbf{nggak ada 'a'}. Makanya dia cuma mau nerima huruf 'b' dan 'c'. Kalau ada 'a' nyasar masuk, divisi ini langsung gagal/mati.
+2. Divisi $q_B$ khusus nampung string yang \textbf{nggak ada 'b'} (cuma nerima 'a' dan 'c').
+3. Divisi $q_C$ khusus nampung string yang \textbf{nggak ada 'c'} (cuma nerima 'a' dan 'b').
+
+Kalau kita kasih input "bcbcbc", divisi $q_B$ dan $q_C$ bakal rontok di tengah jalan. Tapi divisi $q_A$ bakal bertahan muter-muter terus dan sukses. Karena minimal ada satu divisi yang \textit{survive} sampai akhir, string "bcbcbc" dinyatakan sah dan \textbf{diterima}!
 
 \end{document}

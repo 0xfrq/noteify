@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.5)  6 MAY 2026 16:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.5.5)  6 MAY 2026 16:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1325,16 +1325,16 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
 (Font)              scaled to size 12.0pt on input line 108.
 LaTeX Font Info:    Trying to load font information for TS1+ntxtlf on input lin
-e 112.
+e 114.
  (D:\miktex\tex/latex/newtx\ts1ntxtlf.fd
 File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
 )
 LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
-(Font)              scaled to size 12.0pt on input line 112.
+(Font)              scaled to size 12.0pt on input line 114.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 10.95pt on input line 129.
+(Font)              scaled to size 10.95pt on input line 125.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 10.95pt on input line 129.
+(Font)              scaled to size 10.95pt on input line 125.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1344,95 +1344,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [2{D:/miktex/fonts/enc/dvips/tex-gyre/q-ts1.enc}]
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 17.28pt on input line 130.
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 12.5pt on input line 130.
-LaTeX Font Info:    Font shape `OT1/minntx/m/n' will be
-(Font)              scaled to size 9.4pt on input line 130.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 17.28pt on input line 130.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 12.5pt on input line 130.
-LaTeX Font Info:    Font shape `OML/ntxmi/m/it' will be
-(Font)              scaled to size 9.4pt on input line 130.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 17.28pt on input line 130.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 12.5pt on input line 130.
-LaTeX Font Info:    Font shape `LMS/ntxsy/m/n' will be
-(Font)              scaled to size 9.4pt on input line 130.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 17.28pt on input line 130.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 12.5pt on input line 130.
-LaTeX Font Info:    Font shape `LMX/ntxexx/m/n' will be
-(Font)              scaled to size 9.4pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 17.28pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 12.5pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxmia/m/it' will be
-(Font)              scaled to size 9.4pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 17.28pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 12.5pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxsym/m/n' will be
-(Font)              scaled to size 9.4pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 17.28pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 12.5pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxsyc/m/n' will be
-(Font)              scaled to size 9.4pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 17.28pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 12.5pt on input line 130.
-LaTeX Font Info:    Font shape `U/ntxexa/m/n' will be
-(Font)              scaled to size 9.4pt on input line 130.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 130.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\epsilon' on input line 130.
-
-
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 130.
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 13.59999pt, for example:
-(fancyhdr)                \setlength{\headheight}{13.59999pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
-
-[3{D:/miktex/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc}]
-Overfull \hbox (2.89632pt too wide) in paragraph at lines 157--158
-\T1/ntxtlf/m/n/12 Sama kayak DFA, NFA juga digam-barkan pakai model matem-atika
- 5-tupel: $\OML/ntxmi/m/it/12 M \U/ntxmia/m/it/12 = \LMS/ntxsy/m/n/12 ¹\OML/ntx
-mi/m/it/12 Q; \U/ntxmia/m/it/12 ^^F\OML/ntxmi/m/it/12 ; ^^N; q[]; F\LMS/ntxsy/m
-/n/12 º$\T1/ntxtlf/m/n/12 .
- []
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 13.59999pt, for example:
-(fancyhdr)                \setlength{\headheight}{13.59999pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
-
-[4]
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 8.8pt on input line 192.
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 6.6pt on input line 192.
-
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
@@ -1443,7 +1354,35 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[5]
+[3{D:/miktex/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc}]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 203.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\epsilon' on input line 203.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 203.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 240.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\cup' on input line 240.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 240.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 240.
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -1451,31 +1390,70 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
-[6] (D:\noteify\assets\materials\otomata\rendered\nfa.aux)
+[4]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 13.59999pt, for example:
+(fancyhdr)                \setlength{\headheight}{13.59999pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
+
+[5] (D:\noteify\assets\materials\otomata\rendered\nfa.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2020/03/25>
  ***********
-Package rerunfilecheck Info: File `nfa.out' has not changed.
-(rerunfilecheck)             Checksum: 2F1636B8F93F69A17E27562C9334AE22;2691.
+
+
+Package rerunfilecheck Warning: File `nfa.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `nfa.out':
+(rerunfilecheck)             Before: 2F1636B8F93F69A17E27562C9334AE22;2691
+(rerunfilecheck)             After:  B9C951FEF6E2F765A59DAF8C8AC79050;2729.
  ) 
 Here is how much of TeX's memory you used:
- 31051 strings out of 467870
- 570787 string characters out of 5435188
- 981260 words of memory out of 5000000
- 59377 multiletter control sequences out of 15000+600000
- 710732 words of font info for 157 fonts, out of 8000000 for 9000
+ 31050 strings out of 467870
+ 570511 string characters out of 5435188
+ 986273 words of memory out of 5000000
+ 59362 multiletter control sequences out of 15000+600000
+ 694183 words of font info for 133 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 98i,12n,108p,496b,943s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<D:/miktex/fonts/type1/public/newtx/NewTXMI.pfb><D:/miktex/fonts/type1/public
-/tex-gyre/qtmr.pfb><D:/miktex/fonts/type1/public/newtx/txmiaX.pfb><D:/miktex/fo
-nts/type1/public/newtx/txsys.pfb><D:/miktex/fonts/type1/public/newtx/ztmb.pfb><
-D:/miktex/fonts/type1/public/newtx/ztmr.pfb><D:/miktex/fonts/type1/public/newtx
-/ztmri.pfb>
-Output written on D:\noteify\assets\materials\otomata\rendered\nfa.pdf (6 pages
-, 175218 bytes).
+ 98i,12n,108p,468b,943s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{subsection.4.3} has been referenced but does not ex
+ist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.2} has been referenced but does not ex
+ist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.4.1} has been referenced but does not ex
+ist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.4} has been referenced but does not exist, 
+replaced by a fixed one
+
+
+pdfTeX warning (dest): name{subsection.3.1} has been referenced but does not ex
+ist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{section.3} has been referenced but does not exist, 
+replaced by a fixed one
+
+<D:/miktex/fonts/type1/public/newtx/NewTXMI.pfb><D:/miktex/fonts/type1/public/t
+ex-gyre/qtmr.pfb><D:/miktex/fonts/type1/public/newtx/txmiaX.pfb><D:/miktex/font
+s/type1/public/newtx/txsys.pfb><D:/miktex/fonts/type1/public/newtx/ztmb.pfb><D:
+/miktex/fonts/type1/public/newtx/ztmr.pfb><D:/miktex/fonts/type1/public/newtx/z
+tmri.pfb>
+Output written on D:\noteify\assets\materials\otomata\rendered\nfa.pdf (5 pages
+, 177195 bytes).
 PDF statistics:
- 139 PDF objects out of 1000 (max. 8388607)
- 22 named destinations out of 1000 (max. 500000)
+ 143 PDF objects out of 1000 (max. 8388607)
+ 28 named destinations out of 1000 (max. 500000)
  101 words of extra memory for PDF output out of 10000 (max. 10000000)
 
