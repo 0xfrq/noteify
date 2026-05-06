@@ -1,0 +1,935 @@
+\documentclass[12pt,a4paper]{article}
+
+% --- 1. PACKAGES --------------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% Font Settings
+\usepackage{newtxtext,newtxmath}
+\usepackage{courier}
+
+\geometry{margin=2.5cm}
+
+% --- 2. WARNA TEMA ------------------------------------------------------------
+\definecolor{codebg}{RGB}{245,247,250}
+\definecolor{codeframe}{RGB}{180,195,215}
+\definecolor{keywordcolor}{RGB}{0,112,192}
+\definecolor{commentcolor}{RGB}{100,160,100}
+\definecolor{stringcolor}{RGB}{180,70,50}
+\definecolor{notebg}{RGB}{255,249,230}
+\definecolor{noteframe}{RGB}{230,180,50}
+\definecolor{tipbg}{RGB}{230,245,235}
+\definecolor{tipframe}{RGB}{50,160,90}
+\definecolor{sectioncolor}{RGB}{30,80,150}
+
+% --- 3. STYLE SECTION & TOC ---------------------------------------------------
+\titleformat{\section}{\Large\bfseries\color{sectioncolor}}{}{0em}{\thesection\quad}[\titlerule]
+\titleformat{\subsection}{\large\bfseries\color{sectioncolor!80}}{}{0em}{\thesubsection\quad}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{sectioncolor!60}}{}{0em}{\thesubsubsection\quad}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsubsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecfont}{\bfseries\color{sectioncolor}}
+\setcounter{tocdepth}{3}
+
+% --- 4. LISTINGS (CODE STYLE) -------------------------------------------------
+\lstdefinestyle{customstyle}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeframe},
+  keywordstyle=\bfseries\color{keywordcolor},
+  commentstyle=\itshape\color{commentcolor},
+  stringstyle=\color{stringcolor},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false
+}
+\lstset{style=customstyle}
+
+% --- 5. KOTAK CATATAN ---------------------------------------------------------
+\newmdenv[
+  backgroundcolor=notebg, linecolor=noteframe, linewidth=2pt,
+  leftline=true, topline=false, rightline=false, bottomline=false,
+  innerleftmargin=10pt, innertopmargin=6pt, innerbottommargin=6pt, skipabove=8pt
+]{notebox}
+
+\newmdenv[
+  backgroundcolor=tipbg, linecolor=tipframe, linewidth=2pt,
+  leftline=true, topline=false, rightline=false, bottomline=false,
+  innerleftmargin=10pt, innertopmargin=6pt, innerbottommargin=6pt, skipabove=8pt
+]{tipbox}
+
+% --- 6. HEADER & FOOTER -------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Pengolahan Citra Digital -- Bab 4}}
+\fancyhead[R]{\small\textit{noteify -- Pemrosesan Domain Frekuensi}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- 7. DATA COVER ------------------------------------------------------------
+\title{
+  {\LARGE\bfseries Pengolahan Citra Digital}\\[0.5em]
+  {\large Bab 4: Pemrosesan Citra dalam Domain Frekuensi}\\[0.8em]
+  {\normalsize Memahami Transformasi Fourier, teorema sampling, dan teknik pemfilteran
+   berbasis frekuensi sebagai pendekatan alternatif yang powerful dalam pengolahan citra.}
+}
+\author{}
+\date{}
+
+% =============================================================================
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\tableofcontents
+\newpage
+
+% =============================================================================
+\section{Pendahuluan}
+% =============================================================================
+
+Pada Bab 3 kita memproses citra langsung pada nilai piksel (\textit{domain spasial}).
+Bab 4 memperkenalkan pendekatan yang sama sekali berbeda: memindahkan citra ke
+\textbf{domain frekuensi}, melakukan operasi di sana, lalu memindahkannya kembali.
+
+Analogi yang tepat: bayangkan sebuah lagu. Kita bisa mendengarnya sebagai gelombang
+tekanan udara yang berubah terhadap waktu (\textit{domain waktu}), atau kita bisa melihat
+\textit{lembar musik}-nya yang menunjukkan nada dan amplitudo setiap frekuensi
+(\textit{domain frekuensi}). Keduanya merepresentasikan informasi yang \textit{sama},
+hanya caranya berbeda.
+
+Dalam konteks citra:
+\begin{itemize}
+  \item \textbf{Frekuensi rendah} merepresentasikan variasi lambat -- latar belakang,
+        gradien halus, dan area dengan intensitas seragam.
+  \item \textbf{Frekuensi tinggi} merepresentasikan variasi cepat -- tepi (\textit{edges}),
+        noise, dan detail halus.
+\end{itemize}
+
+Keunggulan domain frekuensi: konvolusi dengan kernel besar yang mahal di domain spasial
+menjadi sekadar perkalian elemen-per-elemen di domain frekuensi, jauh lebih efisien.
+
+% =============================================================================
+\section{Intuisi Dasar: Ide Besar Fourier (Bagian 4.1 \& 4.2)}
+% =============================================================================
+
+\subsection{Teorema Fourier}
+
+Jean Baptiste Joseph Fourier (1807) mengemukakan ide yang pada masanya dianggap
+radikal: \textit{setiap fungsi periodik dapat direpresentasikan sebagai penjumlahan
+tak terhingga dari sines dan cosines dengan frekuensi berbeda}, masing-masing
+dikalikan dengan koefisien tertentu. Ide ini kemudian digeneralisasikan untuk
+fungsi non-periodik melalui \textbf{Transformasi Fourier}.
+
+\subsection{Pasangan Transformasi Fourier 1-D Kontinu}
+
+Untuk fungsi kontinu $f(t)$, \textbf{Transformasi Fourier Maju} didefinisikan sebagai:
+
+\begin{equation}
+  F(\mu) = \int_{-\infty}^{\infty} f(t)\, e^{-j2\pi\mu t}\, dt
+  \label{eq:ft_forward}
+\end{equation}
+
+Dan \textbf{Transformasi Fourier Balik} (Inverse FT):
+
+\begin{equation}
+  f(t) = \int_{-\infty}^{\infty} F(\mu)\, e^{j2\pi\mu t}\, d\mu
+  \label{eq:ft_inverse}
+\end{equation}
+
+di mana $\mu$ mewakili frekuensi (dalam Hz jika $t$ dalam detik) dan
+$j = \sqrt{-1}$. Berdasarkan rumus Euler: $e^{j\theta} = \cos\theta + j\sin\theta$,
+sehingga setiap komponen Fourier pada dasarnya adalah gelombang sinus/cosinus.
+
+\begin{notebox}
+\textbf{Intuisi Persamaan~\eqref{eq:ft_forward}:} Faktor $e^{-j2\pi\mu t}$
+berfungsi sebagai ``detektor'' frekuensi. Mengalikan $f(t)$ dengan detektor
+frekuensi $\mu$ lalu mengintegrasikan akan mengekstrak seberapa kuat komponen
+frekuensi $\mu$ terdapat di dalam $f(t)$.
+\end{notebox}
+
+\subsection{Representasi Kompleks: Spektrum, Fase, dan Daya}
+
+Karena $F(\mu)$ adalah bilangan kompleks, ia dapat ditulis sebagai:
+
+\begin{equation}
+  F(\mu) = R(\mu) + j\,I(\mu)
+  \label{eq:ft_complex}
+\end{equation}
+
+\textbf{Spektrum Amplitudo} (yang umum divisualisasikan):
+
+\begin{equation}
+  |F(\mu)| = \sqrt{R^2(\mu) + I^2(\mu)}
+  \label{eq:spectrum_1d}
+\end{equation}
+
+\textbf{Sudut Fase} (menyimpan informasi lokasi dan struktur):
+
+\begin{equation}
+  \phi(\mu) = \arctan\!\left(\frac{I(\mu)}{R(\mu)}\right)
+  \label{eq:phase_1d}
+\end{equation}
+
+\textbf{Spektrum Daya} (\textit{Power Spectrum}):
+
+\begin{equation}
+  P(\mu) = |F(\mu)|^2 = R^2(\mu) + I^2(\mu)
+  \label{eq:power_1d}
+\end{equation}
+
+\subsection{Sifat-Sifat Penting Transformasi Fourier}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lll}
+\toprule
+\textbf{Sifat} & \textbf{Domain Spasial/Waktu} & \textbf{Domain Frekuensi} \\
+\midrule
+Linearitas     & $af(t) + bg(t)$               & $aF(\mu) + bG(\mu)$ \\
+Pergeseran     & $f(t - t_0)$                  & $e^{-j2\pi\mu t_0}\,F(\mu)$ \\
+Konvolusi      & $f(t) * h(t)$                 & $F(\mu) \cdot H(\mu)$ \\
+Korelasi       & $f(t) \star g(t)$             & $F^*(\mu) \cdot G(\mu)$ \\
+Simetri        & $f(t)$ riil                   & $F(-\mu) = F^*(\mu)$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tipbox}
+\textbf{Sifat Konvolusi adalah kunci utama bab ini:} konvolusi di domain spasial
+setara dengan perkalian di domain frekuensi (lihat Persamaan~\eqref{eq:conv_theorem}).
+Ini mengubah operasi yang mahal menjadi perkalian sederhana setelah FFT.
+\end{tipbox}
+
+% =============================================================================
+\section{Sampling dan Teorema Sampling (Bagian 4.3)}
+% =============================================================================
+
+\subsection{Kebutuhan Sampling}
+
+Sebelum citra dapat diolah komputer, sinyal kontinu harus di-\textit{sampling} --
+diambil nilainya pada titik-titik diskrit berjarak $\Delta T$. Pertanyaan kritis:
+\textbf{seberapa rapat sampling agar tidak ada informasi yang hilang?}
+
+\subsection{Teorema Sampling Nyquist-Shannon}
+
+Sebuah fungsi yang dibatasi pita frekuensinya (\textit{band-limited}) dengan
+frekuensi tertinggi $\mu_{\max}$ dapat dipulihkan \textit{secara sempurna} dari
+sampel-sampelnya jika dan hanya jika laju sampling memenuhi:
+
+\begin{equation}
+  \frac{1}{\Delta T} > 2\,\mu_{\max}
+  \label{eq:nyquist}
+\end{equation}
+
+Nilai $2\,\mu_{\max}$ disebut \textbf{Laju Nyquist}. Interval sampling
+$\Delta T = \tfrac{1}{2\mu_{\max}}$ disebut \textbf{Interval Nyquist}.
+
+\subsection{Aliasing}
+
+Jika Persamaan~\eqref{eq:nyquist} dilanggar (sampling terlalu jarang), terjadi
+\textbf{aliasing}: komponen frekuensi tinggi ``berpura-pura'' menjadi frekuensi
+rendah yang salah. Secara matematis, spektrum sinyal yang di-sampling bersifat
+periodik, dan jika laju sampling tidak cukup, periode-periode tersebut akan
+\textit{saling tumpang tindih} (\textit{spectral overlap}).
+
+\begin{notebox}
+Lihat ilustrasi visual aliasing pada gelombang sinus di \textbf{[FIGURE 4.11]}.
+\end{notebox}
+
+\begin{tipbox}
+\textbf{Contoh Aliasing di Dunia Nyata:}
+\begin{itemize}
+  \item Roda berputar di film yang tampak berputar mundur (\textit{wagon-wheel effect}).
+  \item Garis diagonal pada layar yang tampak bergerigi (\textit{jaggies}).
+  \item Pola Moire pada foto kain bermotif halus.
+\end{itemize}
+Solusi umum: terapkan \textit{anti-aliasing filter} (lowpass) sebelum sampling.
+\end{tipbox}
+
+\subsection{Rekonstruksi Sinyal: Interpolasi Sinc}
+
+Sinyal kontinu dapat direkonstruksi sempurna dari sampelnya menggunakan:
+
+\begin{equation}
+  f(t) = \sum_{n=-\infty}^{\infty} f(n\Delta T)\;
+         \mathrm{sinc}\!\left(\frac{t - n\Delta T}{\Delta T}\right)
+  \label{eq:reconstruction}
+\end{equation}
+
+di mana $\mathrm{sinc}(x) = \dfrac{\sin(\pi x)}{\pi x}$.
+
+% =============================================================================
+\section{Discrete Fourier Transform 2-D (Bagian 4.5 \& 4.6)}
+% =============================================================================
+
+\subsection{DFT 1-D Diskrit}
+
+Untuk sinyal diskrit $f(x)$ dengan $N$ sampel, DFT 1-D didefinisikan sebagai:
+
+\begin{equation}
+  F(u) = \sum_{x=0}^{N-1} f(x)\, e^{-j2\pi ux/N},
+  \qquad u = 0, 1, \ldots, N-1
+  \label{eq:dft_1d}
+\end{equation}
+
+Dan inversnya (IDFT 1-D):
+
+\begin{equation}
+  f(x) = \frac{1}{N} \sum_{u=0}^{N-1} F(u)\, e^{j2\pi ux/N},
+  \qquad x = 0, 1, \ldots, N-1
+  \label{eq:idft_1d}
+\end{equation}
+
+\subsection{DFT 2-D untuk Citra $M \times N$}
+
+\begin{equation}
+  F(u,v) = \sum_{x=0}^{M-1} \sum_{y=0}^{N-1}
+            f(x,y)\, e^{-j2\pi\!\left(\frac{ux}{M} + \frac{vy}{N}\right)}
+  \label{eq:dft_2d}
+\end{equation}
+
+Dan inversnya (IDFT 2-D):
+
+\begin{equation}
+  f(x,y) = \frac{1}{MN} \sum_{u=0}^{M-1} \sum_{v=0}^{N-1}
+            F(u,v)\, e^{\,j2\pi\!\left(\frac{ux}{M} + \frac{vy}{N}\right)}
+  \label{eq:idft_2d}
+\end{equation}
+
+\subsection{Spektrum Amplitudo 2-D}
+
+Karena $F(u,v)$ adalah bilangan kompleks, spektrum amplitudo yang divisualisasikan:
+
+\begin{equation}
+  |F(u,v)| = \sqrt{R^2(u,v) + I^2(u,v)}
+  \label{eq:spectrum_2d}
+\end{equation}
+
+Karena rentang nilainya sangat besar, biasanya ditampilkan dalam skala logaritmik:
+
+\begin{equation}
+  D(u,v) = c \cdot \log\!\bigl(1 + |F(u,v)|\bigr)
+  \label{eq:spectrum_log}
+\end{equation}
+
+\subsection{Sudut Fase 2-D}
+
+\begin{equation}
+  \phi(u,v) = \arctan\!\left(\frac{I(u,v)}{R(u,v)}\right)
+  \label{eq:phase_2d}
+\end{equation}
+
+\begin{notebox}
+\textbf{Fase vs.\ Amplitudo:} Jika kita merekonstruksi citra hanya menggunakan
+informasi fase (amplitudo diset konstan), bentuk objek masih dapat dikenali.
+Sebaliknya, jika hanya menggunakan amplitudo (fase diset nol), citra menjadi
+kacau. Ini menunjukkan bahwa \textbf{fase menyimpan informasi struktural} citra.
+Lihat \textbf{[FIGURE 4.26]}.
+\end{notebox}
+
+\subsection{Periodisitas dan Centering}
+
+DFT bersifat periodik dengan periode $M$ dan $N$. Akibatnya, frekuensi rendah
+(komponen DC) berada di sudut-sudut spektrum, bukan di tengah. Untuk memudahkan
+visualisasi dan pemfilteran, spektrum digeser agar frekuensi rendah berada di
+tengah dengan mengalikan citra sebelum DFT dengan:
+
+\begin{equation}
+  f_c(x,y) = f(x,y) \cdot (-1)^{x+y}
+  \label{eq:centering}
+\end{equation}
+
+Setelah pemrosesan selesai, kalikan kembali dengan $(-1)^{x+y}$ untuk
+mengembalikan ke posisi semula.
+
+\subsection{Fast Fourier Transform (FFT)}
+
+DFT naif memerlukan $O(N^2)$ operasi untuk sinyal 1-D berukuran $N$.
+\textbf{FFT} (algoritma Cooley-Tukey, 1965) mereduksinya menjadi $O(N \log N)$.
+Untuk citra $N \times N$, DFT 2-D naif memerlukan $O(N^4)$, sementara FFT 2-D
+hanya $O(N^2 \log N)$ -- perbedaan yang sangat signifikan pada citra besar.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Ukuran Citra} & \textbf{DFT Naif (operasi)} & \textbf{FFT (operasi)} \\
+\midrule
+$256 \times 256$   & $\approx 4 \times 10^{9}$  & $\approx 1 \times 10^{6}$ \\
+$512 \times 512$   & $\approx 7 \times 10^{10}$ & $\approx 4 \times 10^{6}$ \\
+$1024 \times 1024$ & $\approx 1 \times 10^{12}$ & $\approx 2 \times 10^{7}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =============================================================================
+\section{Alur Kerja Pemfilteran Domain Frekuensi (Bagian 4.7)}
+% =============================================================================
+
+\subsection{Teorema Konvolusi sebagai Landasan}
+
+Sifat konvolusi dari Transformasi Fourier menyatakan:
+
+\begin{equation}
+  f(x,y) * h(x,y) \;\xleftrightarrow{\;\mathcal{F}\;}\; F(u,v) \cdot H(u,v)
+  \label{eq:conv_theorem}
+\end{equation}
+
+Persamaan~\eqref{eq:conv_theorem} adalah motivasi utama pemfilteran domain
+frekuensi: konvolusi spasial yang kompleks diganti dengan perkalian sederhana
+setelah FFT.
+
+\subsection{Langkah-Langkah Lengkap Pemfilteran}
+
+Diberikan citra masukan $f(x,y)$ berukuran $M \times N$:
+
+\begin{enumerate}
+  \item \textbf{Padding.} Perluas citra menjadi $P \times Q$ dengan menambah
+        nol (\textit{zero-padding}):
+        \begin{equation}
+          P \geq 2M - 1, \qquad Q \geq 2N - 1
+          \label{eq:padding_size}
+        \end{equation}
+        Biasanya dibulatkan ke pangkat 2 terdekat untuk efisiensi FFT.
+
+  \item \textbf{Centering.} Kalikan dengan $(-1)^{x+y}$
+        (Persamaan~\eqref{eq:centering}).
+
+  \item \textbf{DFT.} Hitung:
+        \begin{equation}
+          F_p(u,v) = \mathcal{F}\!\left\{f_p(x,y)\right\}
+          \label{eq:step_dft}
+        \end{equation}
+
+  \item \textbf{Filter.} Kalikan dengan fungsi filter:
+        \begin{equation}
+          G(u,v) = H(u,v) \cdot F_p(u,v)
+          \label{eq:filtering_step}
+        \end{equation}
+
+  \item \textbf{IDFT.} Hitung:
+        \begin{equation}
+          g_p(x,y) = \mathcal{F}^{-1}\!\left\{G(u,v)\right\}
+          \label{eq:step_idft}
+        \end{equation}
+
+  \item \textbf{Post-processing.} Ambil bagian riil, kembalikan centering,
+        dan potong ke ukuran asli:
+        \begin{equation}
+          g(x,y) = \operatorname{Re}\!\left[g_p(x,y) \cdot (-1)^{x+y}\right]
+                   \Big|_{\substack{0 \leq x \leq M-1 \\ 0 \leq y \leq N-1}}
+          \label{eq:postprocess}
+        \end{equation}
+\end{enumerate}
+
+\begin{notebox}
+\textbf{Mengapa Perlu Padding?} Tanpa padding, DFT menghasilkan \textit{circular
+convolution} (konvolusi siklik): piksel dari sisi kanan ``bocor'' ke sisi kiri.
+Padding memastikan konvolusi siklik bersifat identik dengan konvolusi linear pada
+region yang kita inginkan, menghindari \textit{wraparound error}.
+\end{notebox}
+
+\subsection{Contoh Kode: Alur Kerja Lengkap FFT Filtering}
+
+\begin{lstlisting}[language=Python, caption={Alur kerja pemfilteran domain frekuensi (6 langkah)}]
+import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
+
+def freq_domain_filter(img, H):
+    """
+    Terapkan filter H(u,v) ke citra menggunakan domain frekuensi.
+    img : numpy array 2D (grayscale)
+    H   : numpy array 2D, ukuran P x Q (setelah padding)
+    """
+    M, N = img.shape
+    P, Q = H.shape
+
+    # Langkah 1: Padding
+    fp = np.zeros((P, Q))
+    fp[:M, :N] = img
+
+    # Langkah 2: Centering -- (-1)^(x+y)
+    x, y = np.arange(P), np.arange(Q)
+    xx, yy = np.meshgrid(x, y, indexing='ij')
+    center_mask = (-1.0) ** (xx + yy)
+    fp_c = fp * center_mask
+
+    # Langkah 3: DFT
+    F = np.fft.fft2(fp_c)
+
+    # Langkah 4: Filter G(u,v) = H(u,v) * F(u,v)
+    G = H * F
+
+    # Langkah 5: IDFT
+    gp = np.fft.ifft2(G)
+
+    # Langkah 6: Post-processing
+    g = np.real(gp) * center_mask   # balik centering
+    g = g[:M, :N]                   # potong ke ukuran asli
+
+    return np.clip(g, 0, 255)
+
+
+# --- Demo dengan Ideal Lowpass Filter ---
+img = np.array(Image.open("image.jpg").convert("L"), dtype=np.float64)
+M, N = img.shape
+P, Q = 2 * M, 2 * N
+
+# Buat filter Ideal Lowpass (centered)
+D0 = 50
+u = np.fft.fftfreq(P) * P
+v = np.fft.fftfreq(Q) * Q
+uu, vv = np.meshgrid(u, v, indexing='ij')
+D = np.sqrt(uu**2 + vv**2)
+H_ilpf = (D <= D0).astype(np.float64)
+
+result = freq_domain_filter(img, H_ilpf)
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+axes[0].imshow(img.astype(np.uint8), cmap='gray')
+axes[0].set_title('Citra Asli')
+axes[1].imshow(result.astype(np.uint8), cmap='gray')
+axes[1].set_title('Setelah ILPF (D0=50)')
+for ax in axes:
+    ax.axis('off')
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+
+% =============================================================================
+\section{Jenis-Jenis Filter (Bagian 4.8 \& 4.9)}
+% =============================================================================
+
+\subsection{Jarak dari Pusat Spektrum}
+
+Dasar dari semua filter frekuensi radial adalah jarak setiap titik $(u,v)$ dari
+pusat (DC component):
+
+\begin{equation}
+  D(u,v) = \sqrt{u^2 + v^2}
+  \label{eq:distance}
+\end{equation}
+
+Seluruh filter lowpass dan highpass isotropik didefinisikan berdasarkan
+Persamaan~\eqref{eq:distance} dan nilai cutoff $D_0$.
+
+\subsection{Hubungan Lowpass dan Highpass}
+
+Setiap filter highpass dapat diturunkan langsung dari filter lowpass:
+
+\begin{equation}
+  H_{HP}(u,v) = 1 - H_{LP}(u,v)
+  \label{eq:hp_from_lp}
+\end{equation}
+
+\subsection{Filter Lowpass (Smoothing)}
+
+\subsubsection{Ideal Lowpass Filter (ILPF)}
+
+\begin{equation}
+  H_{\mathrm{ILPF}}(u,v) =
+  \begin{cases}
+    1 & \text{jika } D(u,v) \leq D_0 \\
+    0 & \text{jika } D(u,v) > D_0
+  \end{cases}
+  \label{eq:ilpf}
+\end{equation}
+
+Transisi yang sangat tajam di domain frekuensi (Persamaan~\eqref{eq:ilpf})
+menghasilkan osilasi (\textit{ringing} / \textit{Gibbs phenomenon}) di domain
+spasial -- berupa lingkaran-lingkaran di sekitar tepi objek.
+
+\begin{notebox}
+Lihat efek \textit{ringing} dari ILPF pada \textbf{[FIGURE 4.41]}.
+\end{notebox}
+
+\subsubsection{Butterworth Lowpass Filter (BLPF)}
+
+\begin{equation}
+  H_{\mathrm{BLPF}}(u,v) = \frac{1}{1 + \left[\dfrac{D(u,v)}{D_0}\right]^{2n}}
+  \label{eq:blpf}
+\end{equation}
+
+di mana $n$ adalah orde filter. Semakin besar $n$, semakin tajam transisi
+dan semakin mirip ILPF, namun ringing juga semakin muncul.
+
+\begin{tipbox}
+\textbf{Panduan Pemilihan Orde:} $n = 1$ tidak menghasilkan ringing;
+$n = 2$ merupakan kompromi yang baik; $n \geq 5$ mulai menunjukkan ringing.
+\end{tipbox}
+
+\subsubsection{Gaussian Lowpass Filter (GLPF)}
+
+\begin{equation}
+  H_{\mathrm{GLPF}}(u,v) = e^{-D^2(u,v)\,/\,(2D_0^2)}
+  \label{eq:glpf}
+\end{equation}
+
+\textbf{Keunggulan unik:} Transformasi Fourier dari fungsi Gaussian adalah
+Gaussian itu sendiri. Ini berarti GLPF di domain frekuensi berkorespondensi
+dengan Gaussian filter di domain spasial, dan Gaussian \textbf{tidak menghasilkan
+ringing sama sekali}.
+
+\begin{notebox}
+Perbandingan ketiga filter lowpass dapat dilihat pada \textbf{[FIGURE 4.44]}.
+\end{notebox}
+
+\subsection{Filter Highpass (Sharpening)}
+
+Menggunakan Persamaan~\eqref{eq:hp_from_lp}, ketiga filter highpass:
+
+\begin{equation}
+  H_{\mathrm{IHPF}}(u,v) =
+  \begin{cases}
+    0 & \text{jika } D(u,v) \leq D_0 \\
+    1 & \text{jika } D(u,v) > D_0
+  \end{cases}
+  \label{eq:ihpf}
+\end{equation}
+
+\begin{equation}
+  H_{\mathrm{BHPF}}(u,v) = \frac{1}{1 + \left[\dfrac{D_0}{D(u,v)}\right]^{2n}}
+  \label{eq:bhpf}
+\end{equation}
+
+\begin{equation}
+  H_{\mathrm{GHPF}}(u,v) = 1 - e^{-D^2(u,v)\,/\,(2D_0^2)}
+  \label{eq:ghpf}
+\end{equation}
+
+\subsection{High-Frequency Emphasis (HFE) Filter}
+
+Filter highpass murni menghilangkan seluruh komponen DC sehingga citra tampak
+``datar'' tanpa tonalitas. \textbf{HFE Filter} mengatasi ini dengan
+mempertahankan sebagian komponen frekuensi rendah:
+
+\begin{equation}
+  H_{\mathrm{HFE}}(u,v) = a + b \cdot H_{HP}(u,v), \quad a \geq 0,\; b > a
+  \label{eq:hfe}
+\end{equation}
+
+di mana $a$ adalah offset (biasanya $0 < a < 1$) dan $b$ adalah faktor
+penguatan frekuensi tinggi.
+
+\begin{notebox}
+Jika dikombinasikan dengan Histogram Equalization setelah filtering, hasilnya
+sangat efektif untuk meningkatkan ketajaman dan kontras secara bersamaan.
+Lihat \textbf{[FIGURE 4.57]}.
+\end{notebox}
+
+\subsection{Contoh Kode: Perbandingan Filter Lowpass dan Visualisasi Spektrum}
+
+\begin{lstlisting}[language=Python, caption={Perbandingan ILPF, BLPF, GLPF dan visualisasi spektrum}]
+import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
+
+def make_distance_matrix(P, Q):
+    u = np.fft.fftfreq(P) * P
+    v = np.fft.fftfreq(Q) * Q
+    uu, vv = np.meshgrid(u, v, indexing='ij')
+    D = np.sqrt(uu**2 + vv**2)
+    D[D == 0] = 1e-10
+    return D
+
+def make_lowpass_filters(P, Q, D0, n=2):
+    D = make_distance_matrix(P, Q)
+    H_ideal  = (D <= D0).astype(float)
+    H_butter = 1.0 / (1.0 + (D / D0) ** (2 * n))
+    H_gauss  = np.exp(-(D**2) / (2 * D0**2))
+    return H_ideal, H_butter, H_gauss
+
+def apply_filter(img, H):
+    M, N = img.shape
+    P, Q = H.shape
+    fp = np.zeros((P, Q))
+    fp[:M, :N] = img
+    x, y = np.arange(P), np.arange(Q)
+    xx, yy = np.meshgrid(x, y, indexing='ij')
+    mask = (-1.0) ** (xx + yy)
+    F = np.fft.fft2(fp * mask)
+    G = H * F
+    g = np.real(np.fft.ifft2(G)) * mask
+    return np.clip(g[:M, :N], 0, 255)
+
+img = np.array(Image.open("image.jpg").convert("L"), dtype=np.float64)
+M, N = img.shape
+P, Q = 2 * M, 2 * N
+D0 = 30
+
+# Spektrum Fourier
+x, y = np.arange(M), np.arange(N)
+xx, yy = np.meshgrid(x, y, indexing='ij')
+mask = (-1.0) ** (xx + yy)
+F = np.fft.fft2(img * mask)
+spectrum = np.log(1 + np.abs(F))
+spectrum = 255 * spectrum / spectrum.max()
+
+# Filter
+H_ideal, H_butter, H_gauss = make_lowpass_filters(P, Q, D0, n=2)
+
+fig, axes = plt.subplots(2, 3, figsize=(15, 8))
+
+axes[0, 0].imshow(img.astype(np.uint8), cmap='gray')
+axes[0, 0].set_title('Citra Asli')
+axes[0, 1].imshow(spectrum.astype(np.uint8), cmap='gray')
+axes[0, 1].set_title('Spektrum Fourier (log)')
+axes[0, 2].axis('off')
+
+axes[1, 0].imshow(apply_filter(img, H_ideal).astype(np.uint8), cmap='gray')
+axes[1, 0].set_title('ILPF (D0=30)')
+axes[1, 1].imshow(apply_filter(img, H_butter).astype(np.uint8), cmap='gray')
+axes[1, 1].set_title('BLPF n=2 (D0=30)')
+axes[1, 2].imshow(apply_filter(img, H_gauss).astype(np.uint8), cmap='gray')
+axes[1, 2].set_title('GLPF (D0=30)')
+
+for ax in axes.flatten():
+    ax.axis('off')
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+
+% =============================================================================
+\section{Homomorphic Filtering (Bagian 4.9)}
+% =============================================================================
+
+\subsection{Model Pencahayaan-Reflektansi}
+
+Sebuah citra $f(x,y)$ dimodelkan sebagai perkalian dua komponen:
+
+\begin{equation}
+  f(x,y) = i(x,y) \cdot r(x,y)
+  \label{eq:illumination_model}
+\end{equation}
+
+di mana:
+\begin{itemize}
+  \item $i(x,y)$ adalah \textbf{iluminasi} -- seberapa banyak cahaya mengenai
+        objek. Bervariasi \textit{lambat} secara spasial $\Rightarrow$ frekuensi
+        rendah. Rentang: $0 < i(x,y) < \infty$.
+  \item $r(x,y)$ adalah \textbf{reflektansi} -- seberapa banyak cahaya
+        dipantulkan objek. Bervariasi \textit{cepat} $\Rightarrow$ frekuensi
+        tinggi. Rentang: $0 < r(x,y) < 1$.
+\end{itemize}
+
+\textbf{Masalah utama:} Transformasi Fourier dari perkalian bukan perkalian dari
+Transformasi Fourier:
+\[
+  \mathcal{F}\{i \cdot r\} \neq \mathcal{F}\{i\} \cdot \mathcal{F}\{r\}
+\]
+Sehingga kita tidak bisa memisahkan $i$ dan $r$ secara langsung di domain
+frekuensi.
+
+\subsection{Solusi: Linearisasi dengan Logaritma}
+
+Dengan mengambil logaritma natural, perkalian berubah menjadi penjumlahan:
+
+\begin{equation}
+  z(x,y) = \ln f(x,y) = \ln i(x,y) + \ln r(x,y)
+  \label{eq:log_decomposition}
+\end{equation}
+
+Karena penjumlahan bersifat linear terhadap Transformasi Fourier:
+
+\begin{equation}
+  Z(u,v) = \mathcal{F}_i(u,v) + \mathcal{F}_r(u,v)
+  \label{eq:freq_decomposition}
+\end{equation}
+
+di mana $\mathcal{F}_i$ dan $\mathcal{F}_r$ adalah DFT dari $\ln i$ dan $\ln r$.
+
+\subsection{Filter Homomorphic}
+
+Filter yang digunakan berfungsi menekan frekuensi rendah (iluminasi) dan
+meningkatkan frekuensi tinggi (reflektansi):
+
+\begin{equation}
+  H(u,v) = \bigl(\gamma_H - \gamma_L\bigr)
+            \left[1 - e^{-c\,D^2(u,v)/D_0^2}\right] + \gamma_L
+  \label{eq:homo_filter_func}
+\end{equation}
+
+di mana $\gamma_L < 1 < \gamma_H$, dan $c$ mengontrol kecuraman transisi.
+
+\subsection{Alur Kerja Lengkap Homomorphic Filtering}
+
+\begin{enumerate}
+  \item Hitung logaritma: $z(x,y) = \ln[f(x,y)]$
+        (Persamaan~\eqref{eq:log_decomposition}).
+  \item Hitung DFT: $Z(u,v) = \mathcal{F}\{z(x,y)\}$.
+  \item Terapkan filter:
+        \begin{equation}
+          S(u,v) = H(u,v) \cdot Z(u,v)
+          \label{eq:homo_apply}
+        \end{equation}
+  \item Hitung IDFT: $s(x,y) = \mathcal{F}^{-1}\{S(u,v)\}$.
+  \item Kembalikan ke domain asli dengan eksponensial:
+        \begin{equation}
+          g(x,y) = e^{s(x,y)}
+          \label{eq:homo_exp}
+        \end{equation}
+\end{enumerate}
+
+\begin{tipbox}
+\textbf{Kapan Menggunakan Homomorphic Filtering?}
+\begin{itemize}
+  \item Foto dengan pencahayaan tidak merata (bayangan satu sisi).
+  \item Citra medis (X-ray, MRI) dengan rentang dinamis tinggi.
+  \item Foto malam hari atau kondisi cahaya rendah.
+\end{itemize}
+Hasilnya: iluminasi dinormalisasi, detail tekstur (reflektansi) diperkuat.
+\end{tipbox}
+
+\subsection{Contoh Kode: Homomorphic Filtering}
+
+\begin{lstlisting}[language=Python, caption={Implementasi lengkap homomorphic filtering}]
+import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
+
+def homomorphic_filter(img, D0=30, gamma_L=0.5, gamma_H=2.0, c=1.0):
+    """
+    Homomorphic filtering untuk penyeimbangan iluminasi.
+    img     : numpy array 2D, nilai [0, 255]
+    D0      : cutoff frequency
+    gamma_L : penekanan frekuensi rendah (< 1)
+    gamma_H : penguatan frekuensi tinggi (> 1)
+    c       : kecuraman transisi filter
+    """
+    M, N = img.shape
+
+    # Langkah 1: Ln -- tambah 1 untuk menghindari log(0)
+    ln_img = np.log1p(img.astype(np.float64))
+
+    # Langkah 2: Centering + DFT
+    x, y = np.arange(M), np.arange(N)
+    xx, yy = np.meshgrid(x, y, indexing='ij')
+    center_mask = (-1.0) ** (xx + yy)
+    F = np.fft.fft2(ln_img * center_mask)
+
+    # Langkah 3: Buat filter H(u,v) -- Persamaan homo_filter_func
+    u = np.fft.fftfreq(M) * M
+    v = np.fft.fftfreq(N) * N
+    uu, vv = np.meshgrid(u, v, indexing='ij')
+    D2 = uu**2 + vv**2
+    H = (gamma_H - gamma_L) * (1 - np.exp(-c * D2 / (D0**2))) + gamma_L
+
+    # Langkah 4: Filter + IDFT
+    S = H * F
+    s = np.real(np.fft.ifft2(S)) * center_mask
+
+    # Langkah 5: Eksponensial -- kebalikan log1p
+    g = np.expm1(s)
+    return np.clip(g, 0, 255)
+
+img = np.array(Image.open("image.jpg").convert("L"), dtype=np.float64)
+result = homomorphic_filter(img, D0=30, gamma_L=0.5, gamma_H=2.0, c=1.0)
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+axes[0].imshow(img.astype(np.uint8), cmap='gray')
+axes[0].set_title('Citra Asli')
+axes[1].imshow(result.astype(np.uint8), cmap='gray')
+axes[1].set_title('Setelah Homomorphic Filtering')
+for ax in axes:
+    ax.axis('off')
+plt.tight_layout()
+plt.show()
+\end{lstlisting}
+
+% =============================================================================
+\section{Ringkasan Perbandingan Filter Frekuensi}
+% =============================================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{llllp{4cm}}
+\toprule
+\textbf{Filter} & \textbf{Tipe} & \textbf{Tujuan} & \textbf{Ringing} & \textbf{Catatan} \\
+\midrule
+ILPF        & Lowpass  & Smoothing         & Parah    & Cutoff sempurna \\
+BLPF        & Lowpass  & Smoothing         & Sedang   & Dikontrol orde $n$ \\
+GLPF        & Lowpass  & Smoothing         & Tidak ada & Direkomendasikan \\
+IHPF        & Highpass & Sharpening        & Parah    & --- \\
+BHPF        & Highpass & Sharpening        & Sedang   & --- \\
+GHPF        & Highpass & Sharpening        & Tidak ada & Direkomendasikan \\
+HFE         & Highpass & Sharpening        & Sedang   & Pertahankan tonalitas \\
+Homomorphic & Campuran & Normalisasi iluminasi & Minimal & Perlu preprocessing log \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =============================================================================
+\section{Mini-Latihan (Active Learning)}
+% =============================================================================
+
+\begin{enumerate}[leftmargin=*, label=\textbf{Latihan \arabic*.}]
+
+  \item \textbf{Perhitungan Padding Minimal} \\
+  Jika Anda memiliki citra berukuran $512 \times 512$ dan ingin melakukan pemfilteran
+  di domain frekuensi, berapa nilai minimal $P$ dan $Q$ berdasarkan
+  Persamaan~\eqref{eq:padding_size} agar terhindar dari \textit{wraparound error}?
+  Mengapa dalam praktiknya kita biasanya membulatkan ke pangkat 2 terdekat?
+
+  \begin{tipbox}
+  \textbf{Petunjuk:} Hitung $P \geq 2(512) - 1 = 1023$. Pangkat 2 terdekat
+  di atasnya adalah $1024$. Bagaimana kaitannya dengan efisiensi algoritma
+  FFT Cooley-Tukey?
+  \end{tipbox}
+
+  \item \textbf{Mengapa GLPF Bebas Ringing?} \\
+  Jelaskan secara matematis mengapa GLPF (Persamaan~\eqref{eq:glpf}) tidak
+  menghasilkan efek \textit{ringing}, sementara ILPF (Persamaan~\eqref{eq:ilpf})
+  menghasilkannya. Gunakan Teorema Konvolusi (Persamaan~\eqref{eq:conv_theorem})
+  dalam penjelasan Anda.
+
+  \item \textbf{Eksperimen Cutoff Frequency} \\
+  Dengan menggunakan kode di Bagian 6.5, coba nilai $D_0 \in \{10, 30, 80, 150\}$
+  untuk GLPF. Dokumentasikan bagaimana $D_0$ memengaruhi: (a) tingkat kekaburan
+  citra, (b) noise yang tersisa, dan (c) ketajaman tepi.
+
+  \item \textbf{Fase vs.\ Amplitudo} \\
+  Rekonstruksi sebuah citra menggunakan (a) hanya informasi fase dan (b) hanya
+  amplitudo. Amati hasilnya dan jelaskan mengapa fase lebih penting dalam
+  merepresentasikan struktur visual.
+
+  \begin{tipbox}
+  \textbf{Kode Bantuan:}
+  \begin{lstlisting}[language=Python]
+F = np.fft.fft2(img)
+# (a) hanya fase: set amplitudo = 1
+phase_only = np.real(np.fft.ifft2(np.exp(1j * np.angle(F))))
+# (b) hanya amplitudo: set fase = 0
+mag_only   = np.real(np.fft.ifft2(np.abs(F)))
+  \end{lstlisting}
+  \end{tipbox}
+
+  \item \textbf{Aplikasi Medis: GLPF vs.\ ILPF} \\
+  Jelaskan mengapa dalam aplikasi medis (citra MRI atau mammogram), GLPF
+  lebih disukai daripada ILPF untuk \textit{smoothing}. Hubungkan jawaban
+  Anda dengan fenomena \textit{ringing} dan risiko artefak yang bisa
+  disalahartikan sebagai kelainan medis.
+
+\end{enumerate}
+
+\end{document}
