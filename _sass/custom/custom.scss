@@ -53,10 +53,28 @@ html[data-theme="dark"] .aux-nav-list-item a {
   color: var(--dm-text);
 }
 
+html[data-theme="dark"] .site-header .aux-nav,
+html[data-theme="dark"] .aux-nav,
+html[data-theme="dark"] .aux-nav-list,
+html[data-theme="dark"] .aux-nav-list-item {
+  background: var(--dm-surface);
+  border-color: var(--dm-border);
+}
+
 html[data-theme="dark"] .nav-list-link:hover,
 html[data-theme="dark"] .aux-nav a:hover,
 html[data-theme="dark"] .aux-nav-list-item a:hover {
   color: var(--dm-link);
+}
+
+html[data-theme="dark"] .nav-list-link:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+html[data-theme="dark"] .nav-list-link.active,
+html[data-theme="dark"] .nav-list-link[aria-current="page"] {
+  background: var(--dm-surface-2);
+  color: var(--dm-text);
 }
 
 html[data-theme="dark"] .nav-list-item,
@@ -73,9 +91,24 @@ html[data-theme="dark"] code {
 html[data-theme="dark"] table th,
 html[data-theme="dark"] table td {
   border-color: var(--dm-border);
+  color: var(--dm-text);
 }
 
 html[data-theme="dark"] table thead th {
+  background: var(--dm-surface-2);
+}
+
+html[data-theme="dark"] table {
+  background: var(--dm-surface);
+}
+
+html[data-theme="dark"] table tbody td,
+html[data-theme="dark"] table tbody th {
+  background: var(--dm-surface);
+}
+
+html[data-theme="dark"] table tbody tr:nth-child(even) td,
+html[data-theme="dark"] table tbody tr:nth-child(even) th {
   background: var(--dm-surface-2);
 }
 
