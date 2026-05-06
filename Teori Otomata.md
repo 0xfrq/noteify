@@ -3,6 +3,6 @@ title: Teori Otomata
 layout: page
 ---
 
-| About | Materials | Flashcard | Chall | Attachment |
+| About | Materials | Notes | Chall | Attachment |
 |------|-----------|------------|------------|------------|
-| Deterministic Finite Automata |  soon | soon | soon | soon |
+| 1. Deterministic Finite Automata |  soon | soon | soon | soon |
