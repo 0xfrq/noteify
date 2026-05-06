@@ -1,0 +1,21 @@
+<script>
+(function() {
+  var STORAGE_KEY = 'noteify-theme';
+  var COOKIE_KEY = 'noteify-theme';
+
+  function getCookie(name) {
+    var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : '';
+  }
+
+  function getStoredTheme() {
+    try { return localStorage.getItem(STORAGE_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  var theme = getStoredTheme() || getCookie(COOKIE_KEY);
+  if (theme !== 'dark' && theme !== 'light') {
+    theme = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+</script>
