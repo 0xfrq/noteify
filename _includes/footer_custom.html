@@ -18,9 +18,11 @@
   function syncButton() {
     if (!toggleBtn) return;
     var isDark = getTheme() === 'dark';
+    var label = isDark ? 'Light mode' : 'Dark mode';
+    toggleBtn.textContent = label;
     toggleBtn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-    toggleBtn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
-    toggleBtn.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    toggleBtn.setAttribute('title', label);
+    toggleBtn.setAttribute('aria-label', label);
   }
 
   function applyTheme(theme) {
@@ -36,22 +38,16 @@
   }
 
   function buildButton() {
-    var btn = document.createElement('button');
+    var btn = document.createElement('a');
     btn.id = 'dm-toggle';
-    btn.type = 'button';
-    btn.className = 'dm-toggle';
+    btn.href = '#';
+    btn.className = 'site-button dm-toggle';
+    btn.setAttribute('role', 'button');
     btn.setAttribute('aria-pressed', 'false');
-    btn.setAttribute('title', 'Switch to dark mode');
-    btn.setAttribute('aria-label', 'Switch to dark mode');
-    btn.innerHTML =
-      '<svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">' +
-        '<path d="M21 12.7A9 9 0 0 1 11.3 3a7 7 0 0 0 9.7 9.7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>' +
-      '</svg>' +
-      '<svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">' +
-        '<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/>' +
-        '<path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
-      '</svg>';
-    btn.addEventListener('click', toggleTheme);
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      toggleTheme();
+    });
     return btn;
   }
 
@@ -63,13 +59,19 @@
     }
 
     toggleBtn = buildButton();
+    syncButton();
 
     var auxList = document.querySelector('.aux-nav-list');
     if (auxList) {
       var li = document.createElement('li');
       li.className = 'aux-nav-list-item';
       li.appendChild(toggleBtn);
-      auxList.appendChild(li);
+      var lastItem = auxList.lastElementChild;
+      if (lastItem) {
+        lastItem.insertAdjacentElement('afterend', li);
+      } else {
+        auxList.appendChild(li);
+      }
       syncButton();
       return;
     }

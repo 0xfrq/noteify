@@ -1,0 +1,11 @@
+\contentsline {section}{\numberline {1}Mengenal Non-Deterministic Finite Automata (NFA)}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Apa itu Mesin NFA dan Bedanya dengan DFA?}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Syarat Diterimanya String di NFA}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Transisi Kosong: Epsilon ($\epsilon $)}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Gimana Cara Kerja Transisi Epsilon?}{3}{subsection.2.1}%
+\contentsline {section}{\numberline {3}Definisi Formal dan Tabel Transisi NFA}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Tabel Transisi NFA}{4}{subsection.3.1}%
+\contentsline {section}{\numberline {4}Kumpulan Studi Kasus Perancangan NFA}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Kasus 1: Pola Berakhiran "01"}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Kasus 2: Mengandung Substring "11" atau "00"}{5}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Kasus 3: NFA Tanpa Jalan Buntu (Mirip DFA)}{5}{subsection.4.3}%
