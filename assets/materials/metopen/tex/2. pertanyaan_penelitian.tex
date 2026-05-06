@@ -1,0 +1,265 @@
+\documentclass[12pt,a4paper]{article}
+
+% ─── 1. PACKAGES ──────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tikz}
+
+% Font Settings
+\usepackage{newtxtext,newtxmath} % Times New Roman
+\usepackage{courier}             % Courier New untuk kode
+
+\geometry{margin=2.5cm}
+
+% ─── 2. WARNA TEMA ────────────────────────────────────────────────────────────
+\definecolor{codebg}{RGB}{245,247,250}
+\definecolor{codeframe}{RGB}{180,195,215}
+\definecolor{keywordcolor}{RGB}{0,112,192}
+\definecolor{commentcolor}{RGB}{100,160,100}
+\definecolor{stringcolor}{RGB}{180,70,50}
+\definecolor{notebg}{RGB}{255,249,230}
+\definecolor{noteframe}{RGB}{230,180,50}
+\definecolor{tipbg}{RGB}{230,245,235}
+\definecolor{tipframe}{RGB}{50,160,90}
+\definecolor{sectioncolor}{RGB}{30,80,150}
+
+% ─── 3. STYLE SECTION & TOC ───────────────────────────────────────────────────
+\titleformat{\section}{\Large\bfseries\color{sectioncolor}}{}{0em}{\thesection\quad}[\titlerule]
+\titleformat{\subsection}{\large\bfseries\color{sectioncolor!80}}{}{0em}{\thesubsection\quad}
+
+% Style Table of Contents
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecfont}{\bfseries\color{sectioncolor}}
+
+% ─── 4. LISTINGS (CODE STYLE) ─────────────────────────────────────────────────
+\lstdefinestyle{customstyle}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeframe},
+  keywordstyle=\bfseries\color{keywordcolor},
+  commentstyle=\itshape\color{commentcolor},
+  stringstyle=\color{stringcolor},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false
+}
+\lstset{style=customstyle}
+
+% ─── 5. KOTAK CATATAN (MD-FRAME) ──────────────────────────────────────────────
+\newmdenv[
+  backgroundcolor=notebg, linecolor=noteframe, linewidth=2pt,
+  leftline=true, topline=false, rightline=false, bottomline=false,
+  innerleftmargin=10pt, innertopmargin=6pt, innerbottommargin=6pt, skipabove=8pt
+]{notebox}
+
+\newmdenv[
+  backgroundcolor=tipbg, linecolor=tipframe, linewidth=2pt,
+  leftline=true, topline=false, rightline=false, bottomline=false,
+  innerleftmargin=10pt, innertopmargin=6pt, innerbottommargin=6pt, skipabove=8pt
+]{tipbox}
+
+% ─── 6. HEADER & FOOTER ───────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Metodologi Penelitian}}
+\fancyhead[R]{\small\textit{noteify -- Dasar Penelitian}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ─── 7. DATA COVER ────────────────────────────────────────────────────────────
+\title{
+  {\LARGE\bfseries METODOLOGI PENELITIAN}\\[0.5em]
+  {\large Modul Pembelajaran: Fondasi dan Perancangan Penelitian}\\[0.8em]
+  {\normalsize Penjelasan semi-formal dan komprehensif mengenai cara mengidentifikasi topik, merumuskan hipotesis, menyusun pertanyaan penelitian, hingga teknik merangkum jurnal ilmiah.}
+}
+\author{}
+\date{}
+
+% ==============================================================================
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\tableofcontents
+\newpage
+
+% ─── KONTEN MATERI ─────────────────────────────────────────────────────────────
+
+\section{Identifikasi Topik dan Masalah Penelitian} 
+
+Memulai sebuah riset sering kali jadi fase yang paling membingungkan buat peneliti pemula. Langkah paling awal dan paling krusial dalam menerapkan metode ilmiah adalah memilih topik atau masalah penelitian. Topik inilah yang nantinya bakal ngasih arah dan struktur yang jelas buat seluruh langkah penelitian kita ke depannya.
+
+\subsection{Dari Mana Topik Penelitian Berasal?}
+Ide penelitian nggak jatuh begitu aja dari langit. Ada tiga sumber utama yang bisa kita gali untuk nemuin topik yang oke:
+\begin{enumerate}
+    \item \textbf{Teori:} Konsep-konsep, generalisasi, dan prinsip yang udah ada bisa banget diselidiki ulang. Kita bisa nguji teori tersebut atau nyari konfirmasi dari aspek-aspek tertentu yang belum banyak dibahas.
+    \item \textbf{Pengalaman Pribadi:} Kadang masalah sehari-hari bisa jadi riset yang keren. Misalnya, pas lagi nyeting algoritma \textit{computer vision} buat robot humanoid dan sadar kalau deteksi warna rentan banget sama cahaya. Kegelisahan ini bisa diangkat jadi topik.
+    \item \textbf{Studi Terdahulu \& Literatur:} Membaca buku referensi, ensiklopedia, kajian penelitian, atau \textit{browsing} jurnal di internet adalah sumber ide yang nggak ada habisnya.
+\end{enumerate}
+
+\subsection{Cara Memfokuskan Topik}
+Topik yang terlalu luas malah bakal jadi bumerang. Ada tiga masalah utama kalau topik kita kepanjangan atau terlalu lebar:
+\begin{itemize}
+    \item Cakupan kajian jadi terlalu luas dan melebar ke mana-mana.
+    \item Bikin kita susah ngatur organisasi dan struktur tulisan.
+    \item Penyelidikan jadi terlalu umum, eksekusinya susah, dan pas datanya dapet malah bingung cara nafsirinnya.
+\end{itemize}
+
+Biar nggak kejadian, kita harus fokus. Caranya bisa dengan banyak baca kajian penelitian dan berdiskusi langsung sama pakar di bidang yang kita teliti. 
+
+\begin{notebox}
+\textbf{Perbedaan Kuantitatif vs Kualitatif dalam Memfokuskan Topik}\\
+Pendekatannya lumayan beda, lho:
+\begin{itemize}
+    \item \textbf{Penelitian Kuantitatif:} Topik harus dipersempit dari awal banget sebelum riset jalan. Pernyataan formal topik kuantitatif biasanya langsung mengidentifikasi variabel-variabel apa aja yang mau diteliti.
+    \item \textbf{Penelitian Kualitatif:} Topiknya lebih fleksibel dan cenderung baru menyempit perlahan di saat proses penelitian sedang berlangsung.
+\end{itemize}
+\end{notebox}
+
+\subsection{Topik Apa yang (Tidak) Bisa Diteliti?}
+Nggak semua rasa penasaran bisa dijadikan riset ilmiah. 
+\begin{itemize}
+    \item \textbf{Bisa Diteliti:} Topik yang masalahnya bisa diselidiki melalui pengumpulan dan analisis data yang nyata.
+    \item \textbf{Tidak Bisa Diteliti:} Topik yang berbau masalah filsafat, etika, atau pertanyaan yang sifatnya "sebaiknya". Contohnya: "Apakah sebaiknya celah keamanan web dieksploitasi duluan sebelum dilaporkan?" Ini adalah masalah opini atau pendirian seseorang, jadi nggak bisa diselesaikan murni lewat analisis data kuantitatif.
+\end{itemize}
+
+\newpage
+\section{Merumuskan Pertanyaan Penelitian}
+
+Pertanyaan penelitian selalu bermula dari rasa kepo si peneliti. Pemikiran awalnya mungkin masih santai dan informal, kayak: "Model eksploitasi \textit{Return-Oriented Programming} ini sebenernya efektif nggak sih buat nembus \textit{buffer overflow}?" atau "Apa kelemahan sistem ini?". 
+
+Tapi, pertanyaan-pertanyaan santai kayak gitu punya satu kelemahan besar: \textbf{terlalu kabur dan tidak terarah}. 
+
+\subsection{Kriteria Pertanyaan Penelitian yang Baik} 
+Pertanyaan penelitian bakal jadi nahkoda riset kita. Karena itu, dia wajib memenuhi kriteria berikut:
+
+\textbf{1. Harus Jelas (Clear)} \\
+Jangan pakai istilah yang mengambang. 
+Contoh yang kurang jelas: \textit{"Apakah \textit{framework} keamanan ini efektif?"}
+Kenapa kurang jelas? Karena kata "efektif" itu multi-tafsir. Apakah efektif dari segi \textit{resource overhead}, atau dari persentase \textit{malware} yang ke-blokir? Harus diperjelas.
+
+\textbf{2. Harus Signifikan (Penting)} \\
+Pastikan pertanyaannya emang "worth it" buat dicari jawabannya. Coba tanyakan tiga hal ini ke diri sendiri:
+\begin{itemize}
+    \item Apakah jawaban dari penelitian ini bakal meningkatkan pengetahuan kita?
+    \item Apakah hasilnya bisa meningkatkan praktik atau cara kerja yang ada sekarang?
+    \item Apakah layak ngabisin waktu, tenaga, dan mungkin biaya buat neliti ini?
+\end{itemize}
+
+\subsection{Mengubah Ide Menjadi Pertanyaan yang Dapat Diteliti}
+Banyak ide bagus yang harus dipoles dikit biar bisa diteliti. Coba kita bandingin:
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}p{6cm}p{8cm}@{}}
+\toprule
+\textbf{Tidak Dapat Diteliti} & \textbf{Dapat Diteliti} \\ \midrule
+Apakah sebaiknya anak dimasukkan ke TK? & Apakah anak yang masuk TK punya keterampilan sosial lebih baik dari yang tidak? \\ \addlinespace
+Apakah orang dilahirkan jahat? & Siapakah yang lebih banyak melakukan kejahatan, kelompok A atau kelompok B? \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+\section{Pernyataan Hipotesis} 
+
+Buat penelitian kuantitatif, hipotesis itu ibarat tebakan cerdas atau prediksi sementara tentang apa yang bakal jadi hasil penelitian kita. Tebakan ini nggak asal bunyi, tapi dirumuskan berdasarkan teori yang kuat atau implikasi dari kajian pustaka yang udah kita baca.
+
+Tujuan utama dari uji hipotesis ini simpel: buat ngumpulin data demi mendukung atau menolak tebakan kita tadi.
+
+\subsection{Ciri-ciri Hipotesis yang Keren}
+Hipotesis yang baik harus memenuhi syarat ini:
+\begin{itemize}
+    \item Berdasarkan penalaran yang logis.
+    \item Ngasih penjelasan tentang hasil yang diprediksikan.
+    \item Isinya adalah pernyataan tentang hubungan antar variabel.
+    \item Harus bisa diuji (\textit{testable}) di dunia nyata.
+\end{itemize}
+
+\subsection{Tipe-Tipe Hipotesis}
+Hipotesis itu jenisnya lumayan beragam. Berdasarkan cara penarikannya, ada dua tipe:
+\begin{enumerate}
+    \item \textbf{Induktif:} Ini adalah generalisasi yang dibuat berdasarkan beberapa observasi atau pengamatan langsung.
+    \item \textbf{Deduktif:} Diperoleh langsung dari penjabaran teori yang udah ada, fungsinya buat ngasih bukti yang ngedukung, memperluas, atau bahkan nolak teori tersebut.
+\end{enumerate}
+
+Selain itu, karena hipotesis penelitian selalu menyatakan hubungan antara dua variabel, kita bisa membaginya jadi tiga macam berdasarkan "arah" pernyataannya:
+\begin{itemize}
+    \item \textbf{Non-direksional:} Cuma berani bilang kalau "ada hubungan" atau "ada perbedaan" antar variabel, tapi nggak nebak arahnya ke mana. (Contoh: "Ada perbedaan akurasi antara algoritma A dan algoritma B").
+    \item \textbf{Direksional:} Berani nebak arah hubungannya atau perbedaannya. (Contoh: "Algoritma A memiliki tingkat akurasi yang lebih tinggi daripada algoritma B").
+    \item \textbf{Nol (Null Hypothesis):} Pernyataan datar yang bilang kalau \textbf{tidak ada} hubungan yang signifikan atau \textbf{tidak ada} perbedaan antara variabel-variabel tersebut.
+\end{itemize}
+
+\newpage
+\section{Kajian Pustaka (Literature Review)}
+
+Ini adalah tahap "kepo terstruktur". Kajian pustaka itu proses mengidentifikasi secara sistematis, melokalisasi, dan menganalisis dokumen-dokumen yang isinya informasi tentang masalah penelitian kita. 
+
+\subsection{Kenapa Kajian Pustaka Itu Wajib?}
+Jangan sampai kita capek-capek neliti, ternyata orang lain udah nemuin jawabannya lima tahun lalu. Fungsi kajian pustaka antara lain:
+\begin{itemize}
+    \item Menentukan apa aja yang sebenarnya udah pernah dilakukan orang lain.
+    \item Ngasih wawasan buat ngebangun kerangka pemikiran logis yang pas dengan topik.
+    \item Jadi landasan teori buat ngebangun hipotesis dan menjustifikasi (ngeyakinin) kalau penelitian kita ini emang penting buat dilakukan.
+    \item Mengidentifikasi strategi metodologi apa yang paling cocok dipakai.
+    \item Menghindari replikasi (ngulangin) penelitian orang lain tanpa sadar, entah itu dari segi metodologi, teknik pengumpulan data, prosedur, sampai kesimpulannya.
+\end{itemize}
+
+\begin{tipbox}
+\textbf{Tujuan Utama Mengaji Literatur}\\
+1. Dapet ide, penjelasan, dan teori yang bermanfaat buat merumuskan masalah baru. \\
+2. Ngelihat apakah udah ada bukti memadai yang bisa langsung mecahin masalah kita. \\
+3. Dapet sumber buat merumuskan hipotesis yang solid. \\
+4. Dapet \textit{insight} tentang prosedur statistik, sumber data, dan metode yang tepat. \\
+5. Ngasih data perbandingan buat hasil riset kita nanti.
+\end{tipbox}
+
+\newpage
+\section{Studi Kasus: Rangkuman Jurnal Ilmiah}
+
+Biar nggak cuma teori, salah satu skill utama peneliti adalah kemampuan membaca dan merangkum jurnal internasional dengan cepat. Kita ambil contoh bedah jurnal dari \textit{Computers in Human Behavior} (2018) yang ada di materi referensi kita.
+
+\textbf{Judul:} \textit{Improving students' understanding of basic programming concepts through visual programming language: The role of self-efficacy}.
+
+\subsection{Anatomi Ekstraksi Jurnal}
+Kalau merangkum jurnal, kita cukup ekstrak bagian-bagian inti ini:
+
+\textbf{1. Tujuan Penelitian} \\
+Penelitian ini menerapkan intervensi menggunakan \textit{Visual Programming Language} (VPL) dengan tujuan untuk meningkatkan pemahaman mahasiswa terhadap konsep dasar pemrograman.
+
+\textbf{2. Rumusan Masalah (Research Questions)} \\
+Ada beberapa pertanyaan spesifik:
+\begin{itemize}
+    \item RQ1: Gimana performa mahasiswa terkait konsep dasar pemrograman saat pembelajaran VPL diterapkan?
+    \item RQ2: Gimana performa mereka kalau diukur berdasarkan tingkat \textit{self-efficacy} (kepercayaan diri) yang berbeda-beda?
+    \item RQ3: Apa opini mahasiswa mengenai pembelajaran VPL ini?
+\end{itemize}
+
+\textbf{3. Metode Penelitian} \\
+Penelitian ini pakai desain kuasi-eksperimental. Sebelum eksperimen mulai, kedua grup dikasih \textit{pretest} dulu.
+\begin{itemize}
+    \item \textbf{Grup Eksperimen:} Dikasih \textit{treatment} kursus VPL selama 17 minggu.
+    \item \textbf{Grup Komparasi (Kontrol):} Dikasih kursus pengantar ilmu komputer konvensional selama 17 minggu juga. Tiga konsep dasar (Sequence, Condition, Loop) diajarkan di kelas ini.
+\end{itemize}
+
+\textbf{4. Subjek Penelitian} \\
+Melibatkan 180 mahasiswa dari sebuah universitas di Taiwan Selatan. Mahasiswa ini dipilih secara acak dari 4 kelas di program pendidikan umum. Seluruh subjek telah memberikan \textit{informed consent} atau izin penggunaan data.
+
+\textbf{5. Hasil \& Kesimpulan} \\
+Secara \textit{pretest}, kemampuan kedua grup ini setara dan nggak ada bedanya secara signifikan ($t=0.54, p > 0.05$). Namun setelah \textit{treatment}, disimpulkan bahwa dibandingkan dengan grup komparasi, grup eksperimen mendapatkan pemahaman konsep dasar pemrograman yang \textbf{lebih baik} setelah diajarkan dengan VPL.
+
+\end{document}

@@ -1,0 +1,20 @@
+\contentsline {section}{\numberline {1}Memahami Variabel Penelitian}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Variabel Independen (Bebas)}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Variabel Dependen (Terikat)}{2}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Hakikat dan Fungsi Hipotesis}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Apa itu Hipotesis?}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Karakteristik Hipotesis yang Baik}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Mengapa Hipotesis Sangat Krusial?}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Siklus Penemuan Hipotesis}{3}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Klasifikasi dan Macam-Macam Hipotesis}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Hipotesis Nol vs Hipotesis Alternatif}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Hipotesis Direksional vs Non-Direksional}{4}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Perancangan Desain Eksperimen}{6}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Tiga Komponen Utama Eksperimen}{6}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Klasifikasi Kelompok Desain Penelitian}{6}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Strategi Penugasan Partisipan}{7}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Desain Antar-Kelompok (Between-Group)}{7}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Desain Dalam-Kelompok (Within-Group)}{8}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Desain Faktorial dan Pengaruh Interaksi}{9}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Menyelidiki Lebih dari Satu Variabel Independen}{9}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Membedah Pengaruh Interaksi (Interaction Effect)}{9}{subsection.6.2}%

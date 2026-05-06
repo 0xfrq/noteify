@@ -1,0 +1,177 @@
+\documentclass[12pt,a4paper]{article}
+
+% ─── 1. PACKAGES ──────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tikz} 
+\usetikzlibrary{shapes.geometric, positioning, arrows.meta, calc, decorations.pathreplacing}
+
+% Font Settings
+\usepackage{newtxtext,newtxmath} % Times New Roman
+\usepackage{courier}             % Courier New untuk kode
+
+\geometry{margin=2.5cm}
+
+% ─── 2. WARNA TEMA ────────────────────────────────────────────────────────────
+\definecolor{codebg}{RGB}{245,247,250}
+\definecolor{codeframe}{RGB}{180,195,215}
+\definecolor{keywordcolor}{RGB}{0,112,192}
+\definecolor{commentcolor}{RGB}{100,160,100}
+\definecolor{stringcolor}{RGB}{180,70,50}
+\definecolor{notebg}{RGB}{255,249,230}
+\definecolor{noteframe}{RGB}{230,180,50}
+\definecolor{tipbg}{RGB}{230,245,235}
+\definecolor{tipframe}{RGB}{50,160,90}
+\definecolor{sectioncolor}{RGB}{30,80,150}
+
+% ─── 3. STYLE SECTION & TOC ───────────────────────────────────────────────────
+\titleformat{\section}{\Large\bfseries\color{sectioncolor}}{}{0em}{\thesection\quad}[\titlerule]
+\titleformat{\subsection}{\large\bfseries\color{sectioncolor!80}}{}{0em}{\thesubsection\quad}
+
+% Style Table of Contents
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecfont}{\bfseries\color{sectioncolor}}
+
+% ─── 4. LISTINGS (CODE STYLE) ─────────────────────────────────────────────────
+\lstdefinestyle{customstyle}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{codeframe},
+  keywordstyle=\bfseries\color{keywordcolor},
+  commentstyle=\itshape\color{commentcolor},
+  stringstyle=\color{stringcolor},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  tabsize=4,
+  showstringspaces=false
+}
+\lstset{style=customstyle}
+
+% ─── 5. KOTAK CATATAN (MD-FRAME) ──────────────────────────────────────────────
+\newmdenv[
+  backgroundcolor=notebg, linecolor=noteframe, linewidth=2pt,
+  leftline=true, topline=false, rightline=false, bottomline=false,
+  innerleftmargin=10pt, innertopmargin=6pt, innerbottommargin=6pt, skipabove=8pt
+]{notebox}
+
+\newmdenv[
+  backgroundcolor=tipbg, linecolor=tipframe, linewidth=2pt,
+  leftline=true, topline=false, rightline=false, bottomline=false,
+  innerleftmargin=10pt, innertopmargin=6pt, innerbottommargin=6pt, skipabove=8pt
+]{tipbox}
+
+% ─── 6. HEADER & FOOTER ───────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Metodologi Penelitian}}
+\fancyhead[R]{\small\textit{noteify -- Sampling \& Desain}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ─── 7. DATA COVER ────────────────────────────────────────────────────────────
+\title{
+  {\LARGE\bfseries METODOLOGI PENELITIAN}\\[0.5em]
+  {\large Modul Pembelajaran: Teknik Sampling dan Desain Penelitian}\\[0.8em]
+  {\normalsize Penjelasan komprehensif mengenai konsep populasi, sampel, klasifikasi teknik probability dan non-probability sampling, serta pemahaman inferensi statistik.}
+}
+\author{}
+\date{}
+
+% ==============================================================================
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+\tableofcontents
+\newpage
+
+% ─── KONTEN MATERI ─────────────────────────────────────────────────────────────
+
+\section{Konsep Dasar Populasi dan Sampel}
+
+Sebelum kita terjun ke lapangan untuk mengambil data, ada konsep fundamental yang harus banget dipahami biar nggak salah sasaran. Konsep ini adalah fondasi dari seluruh desain penelitian.
+
+\subsection{Apa itu Populasi dan Sampel?}
+Dalam penelitian, kita nggak selalu bisa meneliti semua orang atau semua benda yang ada di dunia ini. Makanya kita kenal istilah Populasi dan Sampel.
+\begin{itemize}
+    \item \textbf{Populasi} adalah total keseluruhan atau himpunan semesta dari semua anggota (bisa berupa orang, kejadian, maupun objek) yang ingin kita selidiki.
+    \item \textbf{Sampel} adalah sebagian kecil atau \textit{subset} yang diambil dari populasi tersebut. Sampel ini yang bakal kita ukur dan amati secara langsung di lapangan.
+\end{itemize}
+Desain penelitian yang baik sangat didasarkan pada strategi \textit{sampling} yang tepat. Kalau sampelnya salah pilih, kesimpulannya bisa meleset jauh dari kenyataan.
+
+\subsection{Statistik vs Parameter}
+Sering dengar istilah statistik? Dalam konteks metodologi, istilah ini punya makna spesifik pas disandingkan sama parameter.
+\begin{itemize}
+    \item \textbf{Statistik:} Ini adalah nilai (kayak rerata atau simpangan baku) yang dihitung murni dari hasil observasi pada \textbf{Sampel}. Jadi, statistik itu karakteristiknya si sampel.
+    \item \textbf{Parameter:} Ini adalah nilai (rerata atau simpangan baku) yang sebenarnya ada di \textbf{Populasi} secara keseluruhan. Parameter ini adalah kebenaran sejati yang mau kita tebak.
+\end{itemize}
+
+\subsection{Inferensi Statistik dan Generalisasi}
+Karena kita jarang banget bisa ngukur parameter populasi secara langsung (karena kemahalan atau waktunya nggak cukup), kita pakai teknik yang namanya \textbf{Inferensi Statistik}.
+Inferensi statistik ini adalah prosedur ajaib di mana peneliti mencoba "menebak" atau mengestimasi parameter (karakteristik populasi) berdasarkan data statistik (karakteristik sampel) yang udah dikumpulkan.
+
+Proses menebak ini yang kita sebut dengan \textbf{Generalisasi}. Tapi ingat, generalisasi yang baik cuma bisa dilakukan kalau teknik pengambilan sampelnya (sampling) dilakukan dengan benar dan mewakili populasi.
+
+\newpage
+\section{Klasifikasi Desain Sampling}
+
+Teknik pengambilan sampel (Methods of Sampling) secara garis besar dibagi jadi dua klan besar: \textbf{Probability Sampling} (Acak) dan \textbf{Non-Probability Sampling} (Tidak Acak).
+
+\subsection{Probability Sampling (Pengambilan Acak)}
+Di kelompok ini, setiap anggota populasi punya kesempatan atau peluang yang sama buat terpilih jadi sampel. Ini metode yang paling ideal kalau kita mau generalisasi hasil penelitian. Beberapa teknik populer di kelompok ini antara lain:
+\begin{enumerate}
+    \item \textbf{Simple Random Sampling ($A_{1.1}$):} Acak sederhana. Semua orang di populasi diundi (misal pakai \textit{random number generator}) tanpa pandang bulu.
+    \item \textbf{Systematic Random Sampling ($A_{1.2}$):} Pengambilan acak bersistem. Kita pilih sampel dengan rentang interval tertentu (misalnya, ambil orang tiap urutan ke-5 di daftar absensi).
+    \item \textbf{Stratified Random Sampling ($A_{1.3}$):} Acak berlapis. Populasi dibagi dulu jadi beberapa "lapisan" atau strata (misal: kelas X, XI, XII), baru tiap lapisan diambil sampelnya secara acak proporsional.
+    \item \textbf{Multi-stage Random Sampling ($A_{1.4}$):} Acak bertahap. Biasanya dipakai buat cakupan area yang luas banget (misal tingkat nasional). Diacak dari level provinsi, turun ke kota, turun ke kecamatan, dst.
+    \item \textbf{Cluster Random Sampling ($A_{1.6}$):} Acak berkelompok. Populasi dibagi jadi beberapa kelompok (cluster), lalu kita pilih beberapa cluster secara acak. \textbf{Semua} anggota di dalam cluster yang terpilih bakal dijadiin sampel.
+\end{enumerate}
+
+\subsection{Non-Probability Sampling (Pengambilan Tidak Acak)}
+Di kelompok ini, nggak semua orang punya peluang yang sama buat dipilih. Pemilihan sampel didasarkan pada pertimbangan subyektif si peneliti. Biasanya dipakai kalau populasinya susah dilacak atau butuh kriteria super spesifik.
+\begin{enumerate}
+    \item \textbf{Incidental / Accidental / Convenience Sampling ($B_1$):} Pengambilan sampel seenaknya atau seadanya. Siapa aja yang kebetulan gampang ditemui dan gampang diakses (\textit{easily accessible}) oleh peneliti bakal dijadiin sampel.
+    \item \textbf{Judgment Sampling ($B_2$):} Sampel dipilih berdasarkan penilaian atau \textit{judgement} peneliti bahwa orang tersebut emang punya kapasitas untuk menjawab.
+    \item \textbf{Purposive Sampling ($B_3$):} Sampel dipilih sengaja dengan tujuan khusus dan syarat ketat. Yang dipilih cuma orang-orang yang emang "berkualifikasi khusus" (\textit{especially qualified}) di bidang yang lagi diteliti.
+    \item \textbf{Quota Sampling ($B_4$):} Peneliti netapin jatah/kuota tertentu untuk kelompok tertentu (misal: pokoknya harus dapet 50 cowok dan 50 cewek), lalu nyari orangnya bebas asal kuotanya terpenuhi.
+\end{enumerate}
+
+\newpage
+\section{Ilustrasi Visual Strategi Sampling}
+
+Biar nggak pusing bayangin bedanya tipe-tipe sampling, yuk kita lihat ilustrasi visualnya.
+
+\subsection{Ilustrasi Probability (Random) Sampling}
+Coba bayangin kita punya Populasi yang isinya kumpulan huruf abjad dari berbagai warna.
+
+\begin{itemize}
+    \item \textbf{Simple Random:} Dari kumpulan huruf itu, kita bener-bener comot acak membabi buta tanpa lihat warna atau posisi.
+    \item \textbf{Stratified Random:} Kita pisahin dulu huruf-hurufnya berdasarkan warna (merah, biru, hijau). Setelah dipisah (strata), baru kita ambil acak dari masing-masing warna sebesar persentase tertentu (misal 25\% merah, 50\% biru, 25\% hijau). Pastiin perwakilan tiap warna ada!
+    \item \textbf{Cluster Random:} Huruf-huruf itu udah bergerombol secara alami di beberapa kotak (cluster). Kita undi kotaknya. Kalau kotak A dan C yang kepilih, ya udah \textbf{semua} isi huruf di dalam kotak A dan C kita jadiin sampel.
+    \item \textbf{Two-Stage Random:} Ini gabungan. Pertama kita pilih \textit{cluster}-nya secara acak (tahap 1). Terus dari cluster yang kepilih, kita nggak ngambil semuanya, tapi kita acak lagi individu di dalemnya (tahap 2).
+\end{itemize}
+
+\subsection{Ilustrasi Non-Random Sampling}
+Sekarang kalau non-random, niat dan subyektifitas peneliti main peran penuh:
+
+\begin{itemize}
+    \item \textbf{Convenience Sampling:} Kita cuma ngambil huruf-huruf yang posisinya paling deket sama kita, atau yang paling gampang diraih (\textit{Easily accessible}). Nggak peduli mewakili populasi apa nggak, yang penting dapet data cepet.
+    \item \textbf{Purposive Sampling:} Kita milih huruf secara spesifik karena mereka punya ciri-ciri yang sangat kita butuhkan (\textit{Especially qualified}). Misal kita emang sengaja nyari huruf vokal doang buat diteliti, huruf konsonan kita buang.
+\end{itemize}
+
+\end{document}
