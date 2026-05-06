@@ -27,6 +27,15 @@ html[data-theme="dark"] a:hover {
   color: var(--dm-link-hover);
 }
 
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6 {
+  color: var(--dm-text);
+}
+
 html[data-theme="dark"] .site-header,
 html[data-theme="dark"] .side-bar,
 html[data-theme="dark"] .site-footer,
