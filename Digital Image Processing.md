@@ -1,5 +1,5 @@
 ---
-title: Digital Image Processing
+title: 4 - Digital Image Processing
 layout: page
 ---
 

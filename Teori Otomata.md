@@ -1,5 +1,5 @@
 ---
-title: Teori Otomata
+title: 4 - Teori Otomata
 layout: page
 ---
 
