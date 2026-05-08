@@ -1,5 +1,5 @@
 ---
-title: 4- Rekayasa Perangkat Lunak
+title: 4 - Rekayasa Perangkat Lunak
 layout: page
 ---
 
