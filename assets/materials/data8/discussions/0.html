@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CS161 Discussion 0 Quiz</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #94a3b8;
+      margin-bottom: 40px;
+    }
+
+    .question {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .question h3 {
+      margin-top: 0;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #3b82f6;
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+
+    .answer {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #111827;
+      display: none;
+      border-left: 4px solid #22c55e;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>CS161 Discussion 0 Quiz</h1>
+  <div class="subtitle">
+    Interactive Security Review Practice
+  </div>
+
+  <!-- Question 1 -->
+  <div class="question">
+    <h3>Q1.1 — Hexadecimal Conversion</h3>
+    <p>What is the hexadecimal value of decimal number 18?</p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a1')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a1">
+      Correct Answer: <strong>0x12</strong>
+    </div>
+  </div>
+
+  <!-- Question 2 -->
+  <div class="question">
+    <h3>Q1.2 — Hex Addition</h3>
+    <p>What is the value of 0x8339e833 + 0x20 ?</p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a2')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a2">
+      Correct Answer: <strong>0x8339e853</strong>
+    </div>
+  </div>
+
+  <!-- Question 3 -->
+  <div class="question">
+    <h3>Q1.3 — Mixed Base Addition</h3>
+    <p>What is the value of 0x550ecdf2 + decimal 16 ?</p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a3')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a3">
+      Correct Answer: <strong>0x550ece02</strong>
+    </div>
+  </div>
+
+  <!-- Question 4 -->
+  <div class="question">
+    <h3>Q1.4 — Largest Unsigned 32-bit Integer</h3>
+    <p>
+      What is the largest unsigned 32-bit integer?
+      What happens after adding 1?
+    </p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a4')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a4">
+      max = <strong>0xFFFFFFFF</strong><br>
+      max + 1 = <strong>0x00000000</strong>
+    </div>
+  </div>
+
+  <!-- Question 5 -->
+  <div class="question">
+    <h3>Q1.5 — Largest Signed 32-bit Integer</h3>
+
+    <p>
+      What is the largest signed 32-bit integer?
+      What happens after adding 1?
+    </p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a5')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a5">
+      max = <strong>0x7FFFFFFF</strong><br>
+      max + 1 = <strong>0x80000000</strong>
+    </div>
+  </div>
+
+  <!-- Question 6 -->
+  <div class="question">
+    <h3>Q1.6 — Two's Complement</h3>
+
+    <p>
+      If you interpret an n-bit two’s complement number
+      as unsigned, are negative numbers smaller or larger?
+    </p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a6')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a6">
+      Correct Answer: <strong>Larger</strong>
+    </div>
+  </div>
+
+  <!-- Question 7 -->
+  <div class="question">
+    <h3>Q1.7 — Array Size</h3>
+
+    <p>How many bytes are needed for char[16] ?</p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a7')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a7">
+      Correct Answer: <strong>16 bytes</strong>
+    </div>
+  </div>
+
+  <!-- Question 8 -->
+  <div class="question">
+    <h3>Q1.8 — Integer Array Size</h3>
+
+    <p>How many bytes are needed for int[8] ?</p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a8')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a8">
+      Correct Answer: <strong>32 bytes</strong>
+      (assuming 4-byte integers)
+    </div>
+  </div>
+
+  <!-- Question 9 -->
+  <div class="question">
+    <h3>Q1.9 — Little Endian 32-bit</h3>
+
+    <p>
+      Represent pointer 0xDEADBEEF in little-endian 32-bit.
+    </p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a9')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a9">
+      <strong>EF BE AD DE</strong>
+    </div>
+  </div>
+
+  <!-- Question 10 -->
+  <div class="question">
+    <h3>Q1.10 — Little Endian 64-bit</h3>
+
+    <p>
+      Represent pointer 0xDEADBEEF in little-endian 64-bit.
+    </p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a10')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a10">
+      <strong>
+        EF BE AD DE 00 00 00 00
+      </strong>
+    </div>
+  </div>
+
+  <!-- Question 11 -->
+  <div class="question">
+    <h3>Q1.11 — Character Array Memory Layout</h3>
+
+    <p>
+      Represent the char array "ABCDEFGH"
+      in little-endian memory layout.
+    </p>
+
+    <input type="text" placeholder="Enter your answer...">
+
+    <button onclick="toggleAnswer('a11')">
+      Reveal Answer
+    </button>
+
+    <div class="answer" id="a11">
+      A B C D E F G H<br>
+      (ASCII sequence in memory order)
+    </div>
+  </div>
+
+  <div class="footer">
+    Based on CS161 Discussion 0 worksheet :contentReference[oaicite:0]{index=0}
+  </div>
+
+</div>
+
+<script>
+  function toggleAnswer(id) {
+    const answer = document.getElementById(id);
+
+    if (answer.style.display === "block") {
+      answer.style.display = "none";
+    } else {
+      answer.style.display = "block";
+    }
+  }
+</script>
+
+</body>
+</html>
